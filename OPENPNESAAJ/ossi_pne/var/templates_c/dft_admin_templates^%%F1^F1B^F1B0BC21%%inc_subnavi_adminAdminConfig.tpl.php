@@ -1,0 +1,8 @@
+<?php /* Smarty version 2.6.18, created on 2012-06-19 23:04:50
+         compiled from file:/homepage/OPENPNESAAJ/ossi_pne/webapp/modules/admin/templates/inc_subnavi_adminAdminConfig.tpl */ ?>
+<?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 't_escape', 'file:/homepage/OPENPNESAAJ/ossi_pne/webapp/modules/admin/templates/inc_subnavi_adminAdminConfig.tpl', 4, false),)), $this); ?>
+<div class="subNavi">
+<?php echo ''; ?><?php if ($this->_tpl_vars['auth_type'] == 'all'): ?><?php echo '<a href="?m='; ?><?php echo smarty_modifier_t_escape($this->_tpl_vars['module_name']); ?><?php echo '&amp;a=page_'; ?><?php echo smarty_modifier_t_escape($this->_tpl_vars['hash_tbl']->hash('list_c_admin_user')); ?><?php echo '">アカウント管理</a>&nbsp;|&nbsp;'; ?><?php endif; ?><?php echo '<a href="?m='; ?><?php echo smarty_modifier_t_escape($this->_tpl_vars['module_name']); ?><?php echo '&amp;a=page_'; ?><?php echo smarty_modifier_t_escape($this->_tpl_vars['hash_tbl']->hash('edit_admin_password')); ?><?php echo '">パスワード変更</a>&nbsp;|&nbsp;'; ?><?php if ($this->_tpl_vars['auth_type'] == 'all'): ?><?php echo '<a href="?m='; ?><?php echo smarty_modifier_t_escape($this->_tpl_vars['module_name']); ?><?php echo '&amp;a=page_'; ?><?php echo smarty_modifier_t_escape($this->_tpl_vars['hash_tbl']->hash('update_hash_table')); ?><?php echo '">ページ名ランダム生成</a>&nbsp;|&nbsp;'; ?><?php endif; ?><?php echo ''; ?>
+
+</div>
