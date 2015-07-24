@@ -1,0 +1,274 @@
+>>>>>>>>>> 1199599319
+[[FrontPage]]>[[OnTheWay]]
+*Compositeパターン [#o096425c]
+再帰的な構造を表現する。
+
+モジュール版も後で作ろうと思ってます。
+いや、作ります。
+
+**ソース [#ab8ba84e]
+コンポジットでは一番基本的な(どこでも例として挙げられる)、ディレクトリ・ファイル構造を書いてみました。
+とりあえずは追加メソッドのみ。
+
+***コンポーネントクラス [#d7a855c1]
+  class Component
+    def initialize name
+      #名前
+      @name = name
+    end
+  
+    #リスト表示。ユーザが実際に使用するのはこっち
+    def getLists
+      #各インスタンスのリスト生成メソッドを呼出す
+      getMyList ""
+    end
+  
+    #リスト名生成メソッド。メソッドのオーバロードができないので別名で定義
+    def getMyList parents
+    end
+    #外から呼べないようにする
+    private :getMyList
+  
+    def to_s
+      "/" + @name
+    end
+  end
+
+***ファイルクラス(リーフ) [#k0a64749]
+class MyFile < Component      
+  def initialize name
+    super name
+  end
+  
+  def getMyList parents
+    #ファイルなので、自身の名前を表示するのみ
+    puts(parents + to_s)
+  end
+  
+end
+  
+***ディレクトリクラス(コンポジット) [#je88ecea]
+class MyDir < Component
+  def initialize name 
+    super name
+    @directory = Array.new
+  end
+  
+  #ディレクトリは追加メソッド()を持つ
+  def add component 
+    @directory.push component
+  end
+  
+  def getMyList parents
+    #まず自身(ディレクトリ)の名前表示
+    puts(parents + to_s)
+    #次に、自分にぶら下がっている要素を全て表示
+    @directory.each {|item| item.getMyList(parents + to_s)}
+  end
+end
+  
+***テスト実行例 [#m77ac946]
+  
+  #変化させる環境
+  base = Env.new
+  
+  #コマンドの作成
+  
+  # +1するコマンド
+  cp1 = PulusCommand.new( base );
+  cp1.arg = 1; 
+  
+  # ２倍するコマンド
+  cm1 = MultiCommand.new( base );
+  cm1.arg = 2; 
+  
+  # 10倍するコマンド
+  cm2 = MultiCommand.new( base );
+  cm2.arg = 10; 
+  
+  
+  #コマンドキューを生成
+  que = CommandQue.new
+  
+  #初期値を表示
+  puts( base)
+  
+  #最初のコマンドを実行　（+1）
+  que.doOne(cp1);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #２倍コマンドを実行　（*2）
+  que.doOne(cm1);
+  
+  #結果を表示
+  puts( base)
+  
+  #10倍コマンドを実行　（*10）
+  que.doOne(cm2);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+ 
+  #リドゥー
+  que.redoOne
+  
+  #リドゥー結果を表示
+  puts( base)
+
+
+***実行結果 [#o9ae0c8e]
+
+ 100
+ 101
+ 100
+ 200
+ 2000
+ 200
+ 100
+ 200
+
+**解説 [#uff78e51]
+
+処理をコマンドという形で抽象化することで、実行を統一的にあつかえる。
+コマンドをためておいて、あとで順番に実行するなどの制御を行うことなどができる。
+
+応用例としてひとつの処理に対してアンドゥー処理をセットで一つのコマンド内に作っておくことで、比較的容易にそのときの状態や引数から元の状態を再現することができる。
+
+その処理のアンドゥーのタイミング制御を外部から制御できるのでユーザーインターフェースの実装設計が簡単になる。
+
+#ref(コマンドパターンサンプルクラス図.jpg)
+
+**応用例 [#recd941c]
+＜ここに応用例を書く＞
+
+
+*コメント [#g060a8db]
+#comment
+>>>>>>>>>> 1199603529
+[[FrontPage]]>[[OnTheWay]]
+*Compositeパターン [#o096425c]
+再帰的な構造を表現する。
+
+モジュール版も後で作ろうと思ってます。
+いや、作ります。
+
+**ソース [#ab8ba84e]
+コンポジットでは一番基本的な(どこでも例として挙げられる)、ディレクトリ・ファイル構造を書いてみました。
+とりあえずは追加メソッドのみ。
+
+***コンポーネントクラス [#d7a855c1]
+  class Component
+    def initialize name
+      #名前
+      @name = name
+    end
+  
+    #リスト表示。ユーザが実際に使用するのはこっち
+    def getLists
+      #各インスタンスのリスト生成メソッドを呼出す
+      getMyList ""
+    end
+  
+    #リスト名生成メソッド。メソッドのオーバロードができないので別名で定義
+    def getMyList parents
+    end
+  
+    #「追加」メソッド(何もしない)
+    def add component 
+    end
+      
+    def to_s
+      "/" + @name
+    end
+  end
+***ディレクトリクラス(コンポジット) [#je88ecea]
+  class MyDir < Component
+    def initialize name 
+      super
+      @directory = Array.new
+    end
+    
+    #ディレクトリは追加メソッドをオーバライド
+    def add component 
+      @directory.push component
+    end
+  
+    def getMyList parents
+      #まず自身(ディレクトリ)の名前表示
+      puts(parents + to_s)
+      #次に、自分にぶら下がっている要素を全て表示
+      @directory.each {|item| item.getMyList(parents + to_s)}
+    end
+  end
+***ファイルクラス(リーフ) [#k0a64749]
+  class MyFile < Component      
+    def initialize name
+      super
+    end
+  
+    def getMyList parents
+      #ファイルなので、自身の名前を表示するのみ
+      puts(parents + to_s)
+    end
+  end
+***テスト実行例 [#m77ac946]
+  #ルートディレクトリ作成
+  rootdir = MyDir.new("root")
+  
+  #サブディレクトリ追加
+  sub1 = MyDir.new("sub1")
+  sub2 = MyDir.new("sub2")
+  rootdir.add(sub1)
+  rootdir.add(sub2)
+  rootdir.add(MyDir.new("sub3"))
+  
+  #いろいろ追加
+  sub4 = MyDir.new("sub4")
+  sub1.add(sub4)
+  sub4.add(MyFile.new("test.txt"))
+  sub1.add(MyFile.new("test.html"))
+  sub2.add(MyFile.new("test.mp3"))
+  
+  #全リスト表示
+  rootdir.getLists
+ 
+***実行結果 [#o9ae0c8e]
+  /root
+  /root/sub1
+  /root/sub1/sub4
+  /root/sub1/sub4/test.txt
+  /root/sub1/test.html
+  /root/sub2
+  /root/sub2/test.mp3
+  /root/sub3
+ 
+**解説 [#uff78e51]
+
+
+**応用例 [#recd941c]
+＜ここに応用例を書く＞
+
+
+*コメント [#g060a8db]
+#comment
+

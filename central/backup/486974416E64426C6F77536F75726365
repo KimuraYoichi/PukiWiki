@@ -1,0 +1,179 @@
+>>>>>>>>>> 1198703051
+	#------------------------------
+	class TrueAnswer
+	 def initialize
+	   first = rand(9)
+	   
+	   while first == (second = rand(9))
+	   end
+	 
+	   @a =[ first, second ].to_s 
+	   
+	   while @a.include? ( (third= rand(9)).to_s  )
+	   end 
+	   
+	   @a =[ first, second, third ].to_s 
+	
+	   while @a.include? ( (forth= rand(9)).to_s )
+	   end 
+	   
+	   @a =[ first, second, third, forth ].to_s 
+	   #puts @a
+	
+	 end 
+	 
+	 def to_s
+	  @a
+	 end
+	 
+	 def isAllMatch yoso
+	  if(@a + "\n" == yoso) 
+	   #puts "true  " + @a + " " + yoso
+	   true
+	  else
+	   #puts "false  "  + @a + " " + yoso 
+	   false
+	  end
+	   
+	 end
+	end 
+	
+	#------------------------------
+	class Turn
+	  def initialize( hannteis, turnNumber )
+	    @turnNumber = turnNumber
+	    @answer = TrueAnswer.new
+	    @hannteis =hannteis
+	    @counter =0;
+	    @resurt = "Fail"
+	    @yosos = []
+	  end 
+	  
+	  def to_s
+	   "\n" +
+	   "---------------------\n" +
+	   "turnNumber:"  + @turnNumber.to_s + "\n" +
+	   "answer:"      + @answer.to_s + "\n" +
+	   "yoso count:"  + @counter.to_s + "\n" +
+	   "yoso rireki:" + "\n" + @yosos.to_s +
+	   "resurt:"      + @resurt +"\n"
+	  end
+	  
+	  def doTurn
+	    isEnd = false
+	    
+	    while !isEnd 
+	      puts "yoso wo irete kdasai" + @counter.to_s
+	      
+	      inYoso    = gets 
+	      @yosos.push inYoso
+	      hanteiStr = hanntei inYoso
+	      puts hanteiStr
+	      
+	      @isSuccess =  @answer.isAllMatch( inYoso ) 
+	      if( @isSuccess == true )
+	        @resurt = "Success"
+	        puts "Conguraturation! "
+	      end
+	
+	      isEnd = @isSuccess || inYoso.size==1
+	           
+	      #puts "inYoso:" + inYoso + " inYoso.size" + inYoso.size.to_s
+	      @counter += 1 
+	    end
+	
+	      
+	      puts "tudukemasuka?"
+	      isCont = gets 
+	      #puts isCont
+	
+	      if( isCont.to_s == "yes\n" )
+	        #puts isCont +"yes detected"
+	        false    
+	      else
+	        true
+	      end
+	  end
+	
+	  def hanntei yoso
+	    ret="";    
+	    @hannteis.each { |h|
+	     ret = ret + h.getHantei( yoso, @answer.to_s )
+	    }
+	    ret
+	  end
+	end
+	
+	#------------------------------
+	class HitHantei
+	  def getHantei( yoso, kotae )
+	    count = 0
+	    
+	    kotae.size.times { |i|
+	     if yoso[i] == kotae[i]   
+	          count += 1        
+	      end
+	    }
+	
+	    count.to_s + "H"
+	  end
+	end
+	
+	#------------------------------
+	class BlowHantei
+	  def getHantei( yoso, kotae )
+	    #puts " k:" + kotae + " y:" +yoso
+	 
+	    count = 0
+	    #kotae.size.times{|i| 
+	    # yoso.size.times{|j|
+	    #    if( kotae[i] == yoso[j] )
+	    #      count += 1
+	    #    end
+	    # }
+	    #}
+	
+	    kotae.split(//).each {|k| 
+	     yoso.split(//).each{|y|
+	         if( k == y )
+	           count += 1
+	         end
+	      }
+	    }
+	
+	    
+	    count.to_s + "B"
+	  end
+	  
+	end
+	
+	#------------------------------
+	class Game
+	
+	  def initialize  
+	    puts "GAME!"
+	    @turnHistory =[]
+	    @hannteis = [ HitHantei.new, BlowHantei.new ]
+	  end
+	
+	  def doGame
+	  
+	    turns = 0
+	    isEnd=false
+	    
+	    while !isEnd 
+	      puts "start!"
+	      t = Turn.new( @hannteis, turns )
+	      isEnd = t.doTurn
+	      turns += 1
+	      @turnHistory.push t
+	    end
+	    
+	    puts @turnHistory
+	    
+	  end
+	end
+	
+	g = Game.new
+	g.doGame
+

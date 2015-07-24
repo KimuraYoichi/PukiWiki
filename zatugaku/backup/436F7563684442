@@ -1,0 +1,191 @@
+>>>>>>>>>> 1332112486
+-CouchDBとは
+
+[[FrontPage]]へ戻る
+>>>>>>>>>> 1332115359
+*CouchDBとは [#z39cb878]
+ドキュメントをデータとして管理し、Webで公開することに最適化されたデータベース管理システム
+**特徴 [#g0e9678e]
++JSON形式による柔軟なデータ構造
+--JSON形式という書式を介してデータの入出力を行う。
+--JSON形式は各ドキュメントの相違に対して、柔軟に対応することができるという利点がある。
++URIによるドキュメントマッピング
+--CouchDBは、各ドキュメントに対して一意なURIを割り当てる。
+--CouchDBでは複数のドキュメントを取りまとめるために“データベース”という単位を使う。
+--URIは“CouchDBのサーバ名”→“データーベース名”→“ドキュメント名”と順にたどっていくように構成される。
++レプリケーションによる分散ドキュメント管理
+--レプリケーションの機能が標準で組み込まれている。
+--レプリケーションは、データベース”の単位で実行。
+--RDBMSのレプリケーションと異なるのは、データの同期を取るタイミング。データの更新が発生する都度、更新内容がレプリケーション先へすぐに反映するのではなく利用者の任意のタイミングでレプリケーションを実行。
+--ドキュメントを作成して管理するという目的からすると、任意によるレプリケーションの方が有益な場合がある。⇒　実際は、一貫性や冗長性の為のレプリケーションではなく、派生するためのレプリケーションか？？
+
+
+
+
+**JSON(ジェイソン / JavaScript Object Notation) [#p94c86b4]
+-JavaScript（ECMAScript）言語をベースとしたデータ記述言語。
+-仕様が軽量であることからJavaScript以外にも多くの言語でサポートされており、特にWebアプリケーションでのサーバ／クライアント間のデータ受け渡しにJSON記述を使用するケースが増えてきている。
+-記述できるデータタイプは
+--数値
+--文字列
+--真偽値
+--配列
+--ハッシュ
+--null
+-仕様はRFC 4627で規定
+-MIMEタイプはapplication/jsonとなっている。
+
+[[FrontPage]]へ戻る
+>>>>>>>>>> 1332258480
+*CouchDBとは [#z39cb878]
+ドキュメントをデータとして管理し、Webで公開することに最適化されたデータベース管理システム
+**特徴 [#g0e9678e]
++JSON形式による柔軟なデータ構造
+--JSON形式という書式を介してデータの入出力を行う。
+--JSON形式は各ドキュメントの相違に対して、柔軟に対応することができるという利点がある。
++URIによるドキュメントマッピング
+--CouchDBは、各ドキュメントに対して一意なURIを割り当てる。
+--CouchDBでは複数のドキュメントを取りまとめるために“データベース”という単位を使う。
+--URIは“CouchDBのサーバ名”→“データーベース名”→“ドキュメント名”と順にたどっていくように構成される。
++レプリケーションによる分散ドキュメント管理
+--レプリケーションの機能が標準で組み込まれている。
+--レプリケーションは、データベース”の単位で実行。
+--RDBMSのレプリケーションと異なるのは、データの同期を取るタイミング。データの更新が発生する都度、更新内容がレプリケーション先へすぐに反映するのではなく利用者の任意のタイミングでレプリケーションを実行。
+--ドキュメントを作成して管理するという目的からすると、任意によるレプリケーションの方が有益な場合がある。⇒　実際は、一貫性や冗長性の為のレプリケーションではなく、派生するためのレプリケーションか？？
+
+
+
+
+**JSON(ジェイソン / JavaScript Object Notation) [#p94c86b4]
+-JavaScript（ECMAScript）言語をベースとしたデータ記述言語。
+-仕様が軽量であることからJavaScript以外にも多くの言語でサポートされており、特にWebアプリケーションでのサーバ／クライアント間のデータ受け渡しにJSON記述を使用するケースが増えてきている。
+-記述できるデータタイプは
+--数値
+--文字列
+--真偽値
+--配列
+--ハッシュ
+--null
+-仕様はRFC 4627で規定
+-MIMEタイプはapplication/jsonとなっている。
+
+*Macへのインストール [#s37d3a3a]
+**HomeBrewによるインストール [#tbf5c70c]
+HomeBrew
+
+This is the fastest, most current, way of installing CouchDB from source on a Mac, along with all dependencies. It tracks releases with only a few days delay.
+
+Note: if you are using XCode 4.3 or newer, or the command-line only build tools, you may need to install additional GNU automake tools before brewing CouchBB. For users that have not upgraded, these tools are already present and could break other brew recipes, so these dependencies are not included in the CouchDB recipe.
+
+$ brew install autoconf automake libtool
+
+Then:
+
+$ brew install couchdb
+
+If you're hacking on CouchDB, and we hope you will, you may try the current git-based development branch using this couchdb recipe, https://gist.github.com/2083174, and then:
+
+$ brew install --devel couchdb
+
+Note: OS X Lion might hang on the final make. See the thread at https://github.com/mxcl/homebrew/issues/7024 It seems in most cases to be resolved by breaking out with CTRL-C and then repeating with brew install -v couchdb.
+
+If you wish to have CouchDB run as a daemon then, set up the account, using the user accounts preference pane
+
+    create a standard user  couchdb  with home directory  /usr/local/var/lib/couchdb 
+
+    create a group called  couchdb  and add yourself, the couchdb user, and any others you want to be able to edit config or db files directly to it. Use the  advanced  group options to ensure the internal name is also correctly called couchdb. 
+
+Using a terminal, set permissions as follows:
+
+RELAX=/usr/local
+sudo chown -R couchdb:couchdb $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb
+sudo chmod -R 770 $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb
+sudo find -X $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb -type f | xargs chmod 660
+sudo cp $RELAX/Cellar/couchdb/1.1.1/Library/LaunchDaemons/org.apache.couchdb.plist /Library/LaunchDaemons/
+
+Finally, you can start/stop CouchDB daemon using these terminal aliases:
+
+restart_couch='/usr/bin/sudo launchctl stop org.apache.couchdb'
+start_couch='/usr/bin/sudo launchctl load -w /Library/LaunchDaemons/org.apache.couchdb.plist'
+stop_couch='/usr/bin/sudo launchctl unload /Library/LaunchDaemons/org.apache.couchdb.plist'
+
+
+[[FrontPage]]へ戻る
+>>>>>>>>>> 1332269708
+*CouchDBとは [#z39cb878]
+ドキュメントをデータとして管理し、Webで公開することに最適化されたデータベース管理システム~
+Couchbaseは、商用のもの　http://www.couchbase.com/
+**特徴 [#g0e9678e]
++JSON形式による柔軟なデータ構造
+--JSON形式という書式を介してデータの入出力を行う。
+--JSON形式は各ドキュメントの相違に対して、柔軟に対応することができるという利点がある。
++URIによるドキュメントマッピング
+--CouchDBは、各ドキュメントに対して一意なURIを割り当てる。
+--CouchDBでは複数のドキュメントを取りまとめるために“データベース”という単位を使う。
+--URIは“CouchDBのサーバ名”→“データーベース名”→“ドキュメント名”と順にたどっていくように構成される。
++レプリケーションによる分散ドキュメント管理
+--レプリケーションの機能が標準で組み込まれている。
+--レプリケーションは、データベース”の単位で実行。
+--RDBMSのレプリケーションと異なるのは、データの同期を取るタイミング。データの更新が発生する都度、更新内容がレプリケーション先へすぐに反映するのではなく利用者の任意のタイミングでレプリケーションを実行。
+--ドキュメントを作成して管理するという目的からすると、任意によるレプリケーションの方が有益な場合がある。⇒　実際は、一貫性や冗長性の為のレプリケーションではなく、派生するためのレプリケーションか？？
+
+
+
+
+**JSON(ジェイソン / JavaScript Object Notation) [#p94c86b4]
+-JavaScript（ECMAScript）言語をベースとしたデータ記述言語。
+-仕様が軽量であることからJavaScript以外にも多くの言語でサポートされており、特にWebアプリケーションでのサーバ／クライアント間のデータ受け渡しにJSON記述を使用するケースが増えてきている。
+-記述できるデータタイプは
+--数値
+--文字列
+--真偽値
+--配列
+--ハッシュ
+--null
+-仕様はRFC 4627で規定
+-MIMEタイプはapplication/jsonとなっている。
+
+*Macへのインストール [#s37d3a3a]
+**HomeBrewによるインストール [#tbf5c70c]
+HomeBrew
+
+This is the fastest, most current, way of installing CouchDB from source on a Mac, along with all dependencies. It tracks releases with only a few days delay.
+
+Note: if you are using XCode 4.3 or newer, or the command-line only build tools, you may need to install additional GNU automake tools before brewing CouchBB. For users that have not upgraded, these tools are already present and could break other brew recipes, so these dependencies are not included in the CouchDB recipe.
+
+$ brew install autoconf automake libtool
+
+Then:
+
+$ brew install couchdb
+
+If you're hacking on CouchDB, and we hope you will, you may try the current git-based development branch using this couchdb recipe, https://gist.github.com/2083174, and then:
+
+$ brew install --devel couchdb
+
+Note: OS X Lion might hang on the final make. See the thread at https://github.com/mxcl/homebrew/issues/7024 It seems in most cases to be resolved by breaking out with CTRL-C and then repeating with brew install -v couchdb.
+
+If you wish to have CouchDB run as a daemon then, set up the account, using the user accounts preference pane
+
+    create a standard user  couchdb  with home directory  /usr/local/var/lib/couchdb 
+
+    create a group called  couchdb  and add yourself, the couchdb user, and any others you want to be able to edit config or db files directly to it. Use the  advanced  group options to ensure the internal name is also correctly called couchdb. 
+
+Using a terminal, set permissions as follows:
+
+RELAX=/usr/local
+sudo chown -R couchdb:couchdb $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb
+sudo chmod -R 770 $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb
+sudo find -X $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb -type f | xargs chmod 660
+sudo cp $RELAX/Cellar/couchdb/1.1.1/Library/LaunchDaemons/org.apache.couchdb.plist /Library/LaunchDaemons/
+
+Finally, you can start/stop CouchDB daemon using these terminal aliases:
+
+restart_couch='/usr/bin/sudo launchctl stop org.apache.couchdb'
+start_couch='/usr/bin/sudo launchctl load -w /Library/LaunchDaemons/org.apache.couchdb.plist'
+stop_couch='/usr/bin/sudo launchctl unload /Library/LaunchDaemons/org.apache.couchdb.plist'
+
+*CounchDBをサポートするクラウド [#r9feb3e4]
+　cloudant https://cloudant.com/#!/~
+[[FrontPage]]へ戻る
+

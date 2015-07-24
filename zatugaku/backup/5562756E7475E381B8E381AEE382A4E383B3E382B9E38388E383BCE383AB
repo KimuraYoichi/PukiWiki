@@ -1,0 +1,31 @@
+>>>>>>>>>> 1332281705
+*Ubuntuへのインストール [#b73d85f8]
+-Apache CouchDB README.Unix より
+A high-level guide to Unix-like systems, inc. Mac OS X and Ubuntu.
+
+Dependencies
+------------
+
+You will need the following installed:
+
+ * Erlang OTP (>=R13B2)       (http://erlang.org/)
+ * ICU                        (http://icu.sourceforge.net/)
+ * OpenSSL                    (http://www.openssl.org/)
+ * Mozilla SpiderMonkey (1.8) (http://www.mozilla.org/js/spidermonkey/)
+ * libcurl                    (http://curl.haxx.se/libcurl/)
+ * GNU Make                   (http://www.gnu.org/software/make/)
+ * GNU Compiler Collection    (http://gcc.gnu.org/)
+
+It is recommended that you install Erlang OTP R12B-5 or above where possible.
+
+-Ubuntu
+~~~~~~
+
+See
+
+  http://wiki.apache.org/couchdb/Installing_on_Ubuntu
+
+for updated instructions on how to install on Ubuntu.
+
+[[CouchDB]]
+

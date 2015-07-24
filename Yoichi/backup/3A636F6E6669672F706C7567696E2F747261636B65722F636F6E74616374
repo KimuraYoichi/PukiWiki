@@ -1,0 +1,30 @@
+>>>>>>>>>> 1201203235
+* fields [#i13b19ab]
+|項目名  |見出し    |形式    |オプション|デフォルト値|h
+|name    |登録者    |page    |20        |            |
+|category|分類　　　|radio   |          |全般        |
+|state   |状態　　　|select  |          |-           |
+|summary |タイトル  |title   |70        |            |
+|body    |内容詳細　|textarea|60,6      |            |
+
+
+* state [#a344c48f]
+|見出し |セルの書式         |h
+|- 　　 |%s                 |
+|済　　 |BGCOLOR(#999999):%s|
+|質問   |BGCOLOR(#FFCCCC):%s|
+|回答　 |BGCOLOR(#CCFFFF):%s|
+|要望   |BGCOLOR(#FFCC66):%s|
+|連絡   |BGCOLOR(#FFFFCC):%s|
+|保留   |BGCOLOR(#CCFFCC):%s|
+
+* category [#tfb5cb38]
+|見出し          |セルの書式     |h
+|全般        |''%s''             |
+|システム一部|''%s''             |
+|システム二部|''%s''             |
+|ネットワーク|''%s''             |
+|ソフ技      |''%s''             |
+|システム運用|''%s''             |
+|ロイヤルネット|''%s''             |
+

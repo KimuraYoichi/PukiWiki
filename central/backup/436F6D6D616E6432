@@ -1,0 +1,279 @@
+>>>>>>>>>> 1199465807
+[[FrontPage]]>[[OnTheWay]]>[[Command]]
+
+*Commandパターン モジュール版 [#m5303d99]
+
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+コマンドの基底クラスをモジュールでつくって、キューの制御とコマンドの実行を分離して実行をコントローラーにまとめました。
+
+
+**ソース [#p9d4e257]
+
+***コマンドコントローラークラス [#u11469fd]
+ class CommandContoroller
+    def initialize
+      #現在の実行位置を示す
+      @que = CommandQue.new
+    end
+
+   #一つ実行する。 
+   def doOne(com)
+     @que.push( com);
+
+     #コマンドを実行
+     com.doThis
+   end
+   
+   #一つもどす
+   def undoOne
+      com = @que.rewindOne()
+      
+      if( com != nil )
+        com.undoThis
+      end
+   end
+   
+   #再実行
+   def redoOne
+      com = @que.fowardOne()
+      
+      if( com != nil )
+        com.doThis
+      end
+   end 
+ end
+
+
+***コマンドキュークラス [#jeb28a06]
+  class CommandQue
+    def initialize
+      #現在の実行位置を示す
+      @currentPoint = 0
+      
+      #コマンドリスト
+      @commandList = Array.new
+    end
+    def to_s
+      @commandList.to_s
+    end
+  
+   #一つ実行する。 
+   def push(com)
+     if( @currentPoint < @commandList.size )
+       #現在の実行位置以降を削除
+       @commandList.slice( @currentPoint+1 .. @commandList.size )
+     end
+  
+     #実行するコマンドを記録
+     @commandList.push com
+     @currentPoint = @commandList.size
+   end
+   
+   #一つもどす
+   def rewindOne
+     if( @currentPoint >0 )
+       @currentPoint -= 1
+       @commandList[@currentPoint]
+     end
+   end
+   
+   #再実行
+   def fowardOne
+     if( @currentPoint < @commandList.size)
+       com = @commandList[@currentPoint]
+       @currentPoint += 1
+       com
+     end   
+   end
+  end
+
+
+***コマンドモジュール [#gca7b3e2]
+  module Command
+    def initialize( target )
+      @target = target
+    end
+    
+    def to_s
+      @target.to_s
+    end
+  
+     #このコマンドの実行処理
+     def doThis
+      raise "doThis method not implemented"
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+      raise "undoThis method not implemented"
+     end
+  end
+  
+***足し算コマンドクラス [#sd7cdefc]
+  class PulusCommand
+     include Command  
+ 
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis
+        @target.envNumber = @target.envNumber + @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @target.envNumber = @target.envNumber - @arg
+     end
+  end
+  
+***引き算コマンドクラス [#g3be0cf7]
+  class MinusCommand
+     include Command  
+ 
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis
+        @target.envNumber = @target.envNumber - @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @target.envNumber = @target.envNumber + @arg
+     end
+  end
+  
+***かけ算コマンドクラス [#t989b7d9]
+  class MultiCommand
+     include Command  
+ 
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis()
+        @target.envNumber = @target.envNumber * @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @target.envNumber = @target.envNumber / @arg
+     end
+  end
+  
+***変化させる環境を示すクラス [#g082a1e3]
+  class Env
+   def initialize
+     @envNumber = 100;
+   end
+  
+   #アクセサーの定義
+   attr_accessor :envNumber     
+   
+   def to_s
+     @envNumber.to_s
+   end
+  end
+  
+
+***テスト実行例 [#e9e4312b]
+  
+  #コントロールする環境
+  base = Env.new
+  
+  #コマンドの作成
+  
+  # +1するコマンド
+  cp1 = PulusCommand.new( base );
+  cp1.arg = 1; 
+  
+  # ２倍するコマンド
+  cm1 = MultiCommand.new( base );
+  cm1.arg = 2; 
+  
+  # 10倍するコマンド
+  cm2 = MultiCommand.new( base );
+  cm2.arg = 10; 
+  
+  
+  #コマンドコントローラーを生成
+  contoller = CommandContoroller.new
+  
+  #初期値を表示
+  puts( base)
+  
+  #最初のコマンドを実行　（+1）
+  contoller.doOne(cp1);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  contoller.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #２倍コマンドを実行　（*2）
+  contoller.doOne(cm1);
+  
+  #結果を表示
+  puts( base)
+  
+  #２10倍コマンドを実行　（*10）
+  contoller.doOne(cm2);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  contoller.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #アンドゥー
+  contoller.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+
+  #リドゥー
+  contoller.redoOne
+  
+  #リドゥー結果を表示
+  puts( base)
+
+
+***実行結果 [#f2d593b8]
+
+ 100
+ 101
+ 100
+ 200
+ 2000
+ 200
+ 100
+ 200
+
+**解説 [#rbf088d4]
+
+処理をコマンドという形で抽象化することで、実行を統一的にあつかえる。
+コマンドをためておいて、あとで順番に実行するなどの制御を行うことなどができる。
+
+応用例としてひとつの処理に対してアンドゥー処理をセットで一つのコマンド内に作っておくことで、比較的容易にそのときの状態や引数から元の状態を再現することができる。
+
+その処理のアンドゥーのタイミング制御を外部から制御できるのでユーザーインターフェースの実装設計が簡単になる。
+
+#ref(コマンドパターンサンプルクラス図2.jpg)
+
+**応用例 [#r5ba7560]
+＜ここに応用例を書く＞
+
+
+*コメント [#x5d5b512]
+#comment
+

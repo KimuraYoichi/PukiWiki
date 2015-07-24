@@ -1,0 +1,1832 @@
+>>>>>>>>>> 1200258251
+[[FrontPage]]>[[OnTheWay]]
+*Stragyパターン [#z5e0da0f]
+データ構造に対して適用する一連のアルゴリズムをカプセル化し、アルゴリズムの切り替えを容易にする。 
+
+と言うことでとりあえず、データ構造を用意してそれに対する実処理を行うクラスの切り替える例を作ってみました。
+イメージは図書館の検索処理で、検索条件に合わせて呼び出す検索アルゴリズムを変えてみようとチャレンジしました。
+
+[[BookList]]
+
+
+**ソース [#g1d6e4eb]
+
+**本リスト(データ構造) [#gb706e09]
+class BookList
+ # 初期化
+ def initialize
+  #本リスト
+  @list = Array.new;
+  #本情報構造体(出版社:タイトル:著者:出版日:貸し出し有無)
+  @book = Struct.new("Book", :publisher, :title, :author, :publicationDay, :LendingPresence);
+ end
+	
+ # 本追加
+ def addBook (publisher, title, author, publicationDay, lendingPresence)
+  @list << @book.new(publisher, title, author, publicationDay, lendingPresence);
+ end
+ 
+ # 本リストを返す
+ def getBookList
+  return @list;
+ end
+end
+
+
+***コマンド基底クラス [#i1cdaa65]
+  class Command
+    def initialize( base )
+      @base = base
+    end
+    
+    def to_s
+      @base.to_s
+    end
+  
+     #このコマンドの実行処理
+     def doThis
+      raise "doThis method not implemented"
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+      raise "undoThis method not implemented"
+     end
+  end
+  
+***テスト実行例 [#h4c75eb0]
+  
+
+**解説 [#dc3a65f2]
+
+
+**応用例 [#o634ad13]
+＜ここに応用例を書く＞
+
+
+*コメント [#ba7d4ce9]
+#comment
+>>>>>>>>>> 1200260069
+[[FrontPage]]>[[OnTheWay]]
+*Stragyパターン [#z5e0da0f]
+データ構造に対して適用する一連のアルゴリズムをカプセル化し、アルゴリズムの切り替えを容易にする。 
+
+[[BookList]]
+
+
+**ソース [#g1d6e4eb]
+
+***本リスト(データ構造) [#gb706e09]
+
+  class BookList
+   # 初期化
+   def initialize
+    #本リスト
+    @list = Array.new;
+    #本情報構造体(出版社:タイトル:著者:出版日:貸し出し有無)
+    @book = Struct.new  ("Book", :publisher, :title, :author, :publicationDay, :lendingPresence);
+  end
+	
+   # 本追加
+   def addBook (publisher, title, author, publicationDay, lendingPresence)
+    @list << @book.new(publisher, title, author, publicationDay, lendingPresence);
+   end
+ 
+   # 本リストを返す
+   def getBookList
+    return @list;
+   end
+  end
+
+***検索クラス(インタフェース的なもの？) [#aa3e3bac]
+
+  class Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( bookList, inspectKey )
+    # 何も定義しない
+   end
+  end
+
+***出版社名から検索するクラス(適用アルゴリズム・カプセル化) [#f5828bd1]
+
+  class PublisherRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版社名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publisher == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***タイトル名から検索するクラス [#zdf13203]
+
+  class TitleRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # タイトル名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].title == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***著者名から検索するクラス [#lbcf472b]
+
+  class AuthorRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 著者名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+    if @bookList[count].author == inspectKey
+     retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***出版日から検索するクラス [#c06f78a1]
+
+  class PublicationDay < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版日をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publicaionDay == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***図書館クラス [#y57cd23a]
+
+  class Library
+   # 初期化
+   def initialize
+   # 本リスト作成
+    @bookList = BookList.new;
+    @bookList.addBook("A社","しあわせ呼吸トレーニング XXX", "金森 秀晃","2007/01","貸し出し中");
+    @bookList.addBook("A社","所ジョージのキャラクターナビゲーション", "所ジョージ","2007/01","貸し出し中");
+    @bookList.addBook("A社","あなたを危機から救う一分間謝罪法", "ケン ブランチャード","2007/01/01","貸し出し未");
+    @bookList.addBook("B社","蘇る封印歌謡", "石橋 春海","2007/01","貸し出し中");
+    @bookList.addBook("B社"," 「できる人」の時間の使い方~なぜか、「時間と心に余裕のある人」の技術と習慣", "箱田 忠昭","2007/02","貸し出し中");
+    @bookList.addBook("C社","上質美人になる「気品」の教科書―モナコ発セレブの条件","畑中 由利江","2007/02","貸し出し未");
+   end
+ 
+   # 閲覧
+   def inspection
+  
+    puts '■■■■■■本貸し出し状況表示■■■■■■'
+    puts '検索方法を以下から選択して下さい。番号を入力して下さいね。'
+    puts '1:出版社名から検索'
+    puts '2:本名(タイトル)から検索'
+    puts '3:著者名から検索'
+    puts '4:出版日から検索'
+  
+    retrieval = nil;
+    inspectName = nil;
+    while inspect = gets.chomp
+     case  
+      when 
+      inspectName = "出版社名"
+      inspect == '1'; puts '出版社名を入力して下さい。' ;
+      retrieval = PublisherRetrieval.new( @bookList.getBookList );
+      break;
+      when
+      inspectName = "本名(タイトル)"
+      inspect == '2'; puts '本名(タイトル)を入力して下さい。' ;
+      retrieval = TitleRetrieval.new( @bookList.getBookList );
+      break;
+      when
+      inspectName = "著者名"
+      inspect == '3'; puts '著者名を入力して下さい。' ;
+      retrieval = AuthorRetrieval.new( @bookList.getBookList );
+      break;
+      when
+      inspectName = "出版日"
+      inspect == '4'; puts '出版日を入力して下さい。' ;
+      retrieval = PublicationDay.new( @bookList.getBookList );
+      break;
+      else
+       puts '入力値が不正です。もう一度、入力して下さい。'
+      end
+    end
+    inspectKey = gets.chomp;
+    retrievalBookList = retrieval.retrievalBook inspectKey;
+    
+    if (retrievalBookList == nil || retrievalBookList.size == 0)
+     puts '検索条件に該当する本はありません。'
+    else
+     puts '検索条件[' + inspectName + ']:[' + inspectKey + ']に該当する本の貸し出し状況を表示します。';
+     count = 0;
+     #@book = Struct.new("Book", :publisher, :title, :author, :publicationDay, :LendingPresence);
+     while count < retrievalBookList.size
+      puts '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
+      puts '本No.   [' + (count+1).to_s + ']';
+      puts '出版社  [' + retrievalBookList[count].publisher + ']';
+      puts 'タイトル[' + retrievalBookList[count].title + ']';
+      puts '著者名  [' + retrievalBookList[count].author + ']';
+      puts '出版日  [' + retrievalBookList[count].publicationDay + ']';
+      puts '貸し出し状況[' + retrievalBookList[count].lendingPresence + ']';
+      count = count + 1;
+     end
+    end
+   end
+  end
+
+
+***テスト実行例 [#h4c75eb0]
+■■■■■■本貸し出し状況表示■■■■■■
+検索方法を以下から選択して下さい。番号を入力して下さいね。
+
+1:出版社名から検索
+
+2:本名(タイトル)から検索
+
+3:著者名から検索
+
+4:出版日から検索
+
+1
+
+出版社名を入力して下さい。
+
+A社
+
+検索条件[出版社名]:[A社]に該当する本の貸し出し状況を表示します。
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [1]
+
+出版社  [A社]
+
+タイトル[しあわせ呼吸トレーニング XXX]
+
+著者名  [金森 秀晃]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [2]
+
+出版社  [A社]
+
+タイトル[所ジョージのキャラクターナビゲーション]
+
+著者名  [所ジョージ]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [3]
+
+出版社  [A社]
+
+タイトル[あなたを危機から救う一分間謝罪法]
+
+著者名  [ケン ブランチャード]
+
+出版日  [2007/01/01]  
+
+貸し出し状況[貸し出し未]
+
+**解説 [#dc3a65f2]
+
+と言うことでとりあえず、データ構造を用意してそれに対する実処理を行うクラスの切り替える例を作ってみました。
+
+イメージは図書館の検索処理で、検索条件に合わせて呼び出す検索アルゴリズムを変えてみようとチャレンジしました。
+
+
+
+**応用例 [#o634ad13]
+＜ここに応用例を書く＞
+
+
+*コメント [#ba7d4ce9]
+#comment
+>>>>>>>>>> 1200272770
+[[FrontPage]]>[[OnTheWay]]
+*Stragyパターン [#z5e0da0f]
+データ構造に対して適用する一連のアルゴリズムをカプセル化し、アルゴリズムの切り替えを容易にする。 
+
+[[BookList]]
+
+
+**ソース [#g1d6e4eb]
+
+***本リスト(データ構造) [#gb706e09]
+
+  class BookList
+   # 初期化
+   def initialize
+    #本リスト
+    @list = Array.new;
+    #本情報構造体(出版社:タイトル:著者:出版日:貸し出し有無)
+    @book = Struct.new  ("Book", :publisher, :title, :author, :publicationDay, :lendingPresence);
+  end
+	
+   # 本追加
+   def addBook (publisher, title, author, publicationDay, lendingPresence)
+    @list << @book.new(publisher, title, author, publicationDay, lendingPresence);
+   end
+ 
+   # 本リストを返す
+   def getBookList
+    return @list;
+   end
+  end
+
+***検索クラス(インタフェース的なもの？) [#aa3e3bac]
+
+  class Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( bookList, inspectKey )
+    # 何も定義しない
+   end
+  end
+
+***出版社名から検索するクラス(適用アルゴリズム・カプセル化) [#f5828bd1]
+
+  class PublisherRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版社名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publisher == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***タイトル名から検索するクラス [#zdf13203]
+
+  class TitleRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # タイトル名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].title == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***著者名から検索するクラス [#lbcf472b]
+
+  class AuthorRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 著者名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+    if @bookList[count].author == inspectKey
+     retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***出版日から検索するクラス [#c06f78a1]
+
+  class PublicationDay < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版日をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publicaionDay == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***図書館クラス [#y57cd23a]
+
+  class Library
+   # 初期化
+   def initialize
+   # 本リスト作成
+    @bookList = BookList.new;
+    @bookList.addBook("A社","しあわせ呼吸トレーニング XXX", "金森 秀晃","2007/01","貸し出し中");
+    @bookList.addBook("A社","所ジョージのキャラクターナビゲーション", "所ジョージ","2007/01","貸し出し中");
+    @bookList.addBook("A社","あなたを危機から救う一分間謝罪法", "ケン ブランチャード","2007/01/01","貸し出し未");
+    @bookList.addBook("B社","蘇る封印歌謡", "石橋 春海","2007/01","貸し出し中");
+    @bookList.addBook("B社"," 「できる人」の時間の使い方~なぜか、「時間と心に余裕のある人」の技術と習慣", "箱田 忠昭","2007/02","貸し出し中");
+    @bookList.addBook("C社","上質美人になる「気品」の教科書―モナコ発セレブの条件","畑中 由利江","2007/02","貸し出し未");
+   end
+ 
+   # 閲覧
+   def inspection
+  
+    puts '■■■■■■本貸し出し状況表示■■■■■■'
+    puts '検索方法を以下から選択して下さい。番号を入力して下さいね。'
+    puts '1:出版社名から検索'
+    puts '2:本名(タイトル)から検索'
+    puts '3:著者名から検索'
+    puts '4:出版日から検索'
+  
+    retrieval = nil;
+    inspectName = nil;
+    while inspect = gets.chomp
+     case  
+      when 
+      inspectName = "出版社名"
+      inspect == '1'; puts '出版社名を入力して下さい。' ;
+      retrieval = PublisherRetrieval.new( @bookList.getBookList );
+      break;
+      when
+      inspectName = "本名(タイトル)"
+      inspect == '2'; puts '本名(タイトル)を入力して下さい。' ;
+      retrieval = TitleRetrieval.new( @bookList.getBookList );
+      break;
+      when
+      inspectName = "著者名"
+      inspect == '3'; puts '著者名を入力して下さい。' ;
+      retrieval = AuthorRetrieval.new( @bookList.getBookList );
+      break;
+      when
+      inspectName = "出版日"
+      inspect == '4'; puts '出版日を入力して下さい。' ;
+      retrieval = PublicationDay.new( @bookList.getBookList );
+      break;
+      else
+       puts '入力値が不正です。もう一度、入力して下さい。'
+      end
+    end
+    inspectKey = gets.chomp;
+    retrievalBookList = retrieval.retrievalBook inspectKey;
+    
+    if (retrievalBookList == nil || retrievalBookList.size == 0)
+     puts '検索条件に該当する本はありません。'
+    else
+     puts '検索条件[' + inspectName + ']:[' + inspectKey + ']に該当する本の貸し出し状況を表示します。';
+     count = 0;
+     #@book = Struct.new("Book", :publisher, :title, :author, :publicationDay, :LendingPresence);
+     while count < retrievalBookList.size
+      puts '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
+      puts '本No.   [' + (count+1).to_s + ']';
+      puts '出版社  [' + retrievalBookList[count].publisher + ']';
+      puts 'タイトル[' + retrievalBookList[count].title + ']';
+      puts '著者名  [' + retrievalBookList[count].author + ']';
+      puts '出版日  [' + retrievalBookList[count].publicationDay + ']';
+      puts '貸し出し状況[' + retrievalBookList[count].lendingPresence + ']';
+      count = count + 1;
+     end
+    end
+   end
+  end
+
+
+***テスト実行例 [#h4c75eb0]
+■■■■■■本貸し出し状況表示■■■■■■
+検索方法を以下から選択して下さい。番号を入力して下さいね。
+
+1:出版社名から検索
+
+2:本名(タイトル)から検索
+
+3:著者名から検索
+
+4:出版日から検索
+
+1
+
+出版社名を入力して下さい。
+
+A社
+
+検索条件[出版社名]:[A社]に該当する本の貸し出し状況を表示します。
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [1]
+
+出版社  [A社]
+
+タイトル[しあわせ呼吸トレーニング XXX]
+
+著者名  [金森 秀晃]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [2]
+
+出版社  [A社]
+
+タイトル[所ジョージのキャラクターナビゲーション]
+
+著者名  [所ジョージ]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [3]
+
+出版社  [A社]
+
+タイトル[あなたを危機から救う一分間謝罪法]
+
+著者名  [ケン ブランチャード]
+
+出版日  [2007/01/01]  
+
+貸し出し状況[貸し出し未]
+
+**解説 [#dc3a65f2]
+
+と言うことでとりあえず、データ構造を用意してそれに対する実処理を行うクラスの切り替える例を作ってみました。
+
+イメージは図書館の検索処理で、検索条件に合わせて呼び出す検索アルゴリズムを変えてみようとチャレンジしました。
+
+
+
+**応用例 [#o634ad13]
+＜ここに応用例を書く＞
+
+
+*コメント [#ba7d4ce9]
+- おしいなぁ。もうちょい。　検索ロジックを直接使うクラスが実際の型を意識しないで動作するというのがストラテジーのポイントなんで、その点がわかるようなサンプルになっていないと厳しいと思う。つまり図書館クラスのロジック中に検索クラスの具体的なクラス名がでてこないような例をかんがえてくださいな。 -- [[はやし]] &new{2008-01-14 (月) 19:06:10};
+
+#comment
+>>>>>>>>>> 1200809935
+[[FrontPage]]>[[OnTheWay]]
+*Stragyパターン [#z5e0da0f]
+データ構造に対して適用する一連のアルゴリズムをカプセル化し、アルゴリズムの切り替えを容易にする。 
+
+**ソース [#g1d6e4eb]
+
+***本リスト(データ構造) [#gb706e09]
+
+  class BookList
+   # 初期化
+   def initialize
+    #本リスト
+    @list = Array.new;
+    #本情報構造体(出版社:タイトル:著者:出版日:貸し出し有無)
+    @book = Struct.new  ("Book", :publisher, :title, :author, :publicationDay, :lendingPresence);
+  end
+	
+   # 本追加
+   def addBook (publisher, title, author, publicationDay, lendingPresence)
+    @list << @book.new(publisher, title, author, publicationDay, lendingPresence);
+   end
+ 
+   # 本リストを返す
+   def getBookList
+    return @list;
+   end
+  end
+
+***検索クラス(インタフェース的なもの？) [#aa3e3bac]
+
+  class Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( bookList, inspectKey )
+    # 何も定義しない
+   end
+  end
+
+***出版社名から検索するクラス(適用アルゴリズム・カプセル化) [#f5828bd1]
+
+  class PublisherRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版社名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publisher == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***タイトル名から検索するクラス [#zdf13203]
+
+  class TitleRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # タイトル名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].title == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***著者名から検索するクラス [#lbcf472b]
+
+  class AuthorRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 著者名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+    if @bookList[count].author == inspectKey
+     retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***出版日から検索するクラス [#c06f78a1]
+
+  class PublicationDay < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版日をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publicaionDay == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+***検索クラスファクトリークラス [#ne8e4596]
+
+ class RetrievalFactory
+  def getInstance(inspect, bookList)
+   case  
+    when inspect == "1"; 
+     return PublisherRetrieval.new( bookList );
+    when inspect == '2'; 
+     return TitleRetrieval.new( bookList );
+    when inspect == '3'; 
+     return AuthorRetrieval.new( bookList );
+    when inspect == '4'; 
+     return PublicationDay.new( bookList );
+    else
+     raise NotImplementedError, "インスタンス化できません"
+    end
+  end
+ end
+
+***図書館クラス [#y57cd23a]
+
+ class Library
+  # 初期化
+  def initialize
+  # 本リスト作成
+   @bookList = BookList.new;
+   @bookList.addBook("A社","しあわせ呼吸トレーニング XXX", "金森 秀晃","2007/01","貸し出し中");
+   @bookList.addBook("A社","所ジョージのキャラクターナビゲーション", "所ジョージ","2007/01","貸し出し中");
+   @bookList.addBook("A社","あなたを危機から救う一分間謝罪法", "ケン ブランチャード","2007/01/01","貸し出し未");
+   @bookList.addBook("B社","蘇る封印歌謡", "石橋 春海","2007/01","貸し出し中");
+   @bookList.addBook("B社"," 「できる人」の時間の使い方~なぜか、「時間と心に余裕のある人」の技術と習慣", "箱田 忠昭","2007/02","貸し出し中");
+   @bookList.addBook("C社","上質美人になる「気品」の教科書―モナコ発セレブの条件","畑中 由利江","2007/02","貸し出し未");
+  end
+
+  # 閲覧
+  def inspection
+ 
+   puts '■■■■■■本貸し出し状況表示■■■■■■'
+   puts '検索方法を以下から選択して下さい。番号を入力して下さいね。'
+   puts '1:出版社名から検索'
+   puts '2:本名(タイトル)から検索'
+   puts '3:著者名から検索'
+   puts '4:出版日から検索'
+ 
+   inspectName = nil;
+   while inspect = gets.chomp
+    case  
+     when inspect == '1'; 
+     inspectName = "出版社名"
+     puts '出版社名を入力して下さい。' ;
+     break;
+     when inspect == '2'; 
+     inspectName = "本名(タイトル)"
+     puts '本名(タイトル)を入力して下さい。' ;
+     break;
+     when inspect == '3'; 
+     inspectName = "著者名"
+     puts '著者名を入力して下さい。' ;
+     break;
+     when inspect == '4'; 
+     inspectName = "出版日"
+     puts '出版日を入力して下さい。' ;
+     break;
+     else
+      puts '入力値が不正です。もう一度、入力して下さい。'
+     end
+   end
+   inspectKey = gets.chomp;
+   # 検索クラス生成
+   factory = RetrievalFactory.new;
+   retrieval = factory.getInstance(inpect, @bookList.getBookList);
+   retrievalBookList = retrieval.retrievalBook inspectKey;
+   
+   if (retrievalBookList == nil || retrievalBookList.size == 0)
+    puts '検索条件に該当する本はありません。'
+   else
+    puts '検索条件[' + inspectName + ']:[' + inspectKey + ']に該当する本の貸し出し状況を表示します。';
+    count = 0;
+    #@book = Struct.new("Book", :publisher, :title, :author, :publicationDay, :LendingPresence);
+    while count < retrievalBookList.size
+     puts '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
+     puts '本No.   [' + (count+1).to_s + ']';
+     puts '出版社  [' + retrievalBookList[count].publisher + ']';
+     puts 'タイトル[' + retrievalBookList[count].title + ']';
+     puts '著者名  [' + retrievalBookList[count].author + ']';
+     puts '出版日  [' + retrievalBookList[count].publicationDay + ']';
+     puts '貸し出し状況[' + retrievalBookList[count].lendingPresence + ']';
+     count = count + 1;
+    end
+   end
+  end
+ end
+
+
+***テスト実行例 [#h4c75eb0]
+■■■■■■本貸し出し状況表示■■■■■■
+検索方法を以下から選択して下さい。番号を入力して下さいね。
+
+1:出版社名から検索
+
+2:本名(タイトル)から検索
+
+3:著者名から検索
+
+4:出版日から検索
+
+1
+
+出版社名を入力して下さい。
+
+A社
+
+検索条件[出版社名]:[A社]に該当する本の貸し出し状況を表示します。
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [1]
+
+出版社  [A社]
+
+タイトル[しあわせ呼吸トレーニング XXX]
+
+著者名  [金森 秀晃]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [2]
+
+出版社  [A社]
+
+タイトル[所ジョージのキャラクターナビゲーション]
+
+著者名  [所ジョージ]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [3]
+
+出版社  [A社]
+
+タイトル[あなたを危機から救う一分間謝罪法]
+
+著者名  [ケン ブランチャード]
+
+出版日  [2007/01/01]  
+
+貸し出し状況[貸し出し未]
+
+**解説 [#dc3a65f2]
+
+と言うことでとりあえず、データ構造を用意してそれに対する実処理を行うクラスの切り替える例を作ってみました。
+
+イメージは図書館の検索処理で、検索条件に合わせて呼び出す検索アルゴリズムを変えてみようとチャレンジしました。
+
+
+
+**応用例 [#o634ad13]
+＜ここに応用例を書く＞
+
+
+*コメント [#ba7d4ce9]
+- おしいなぁ。もうちょい。　検索ロジックを直接使うクラスが実際の型を意識しないで動作するというのがストラテジーのポイントなんで、その点がわかるようなサンプルになっていないと厳しいと思う。つまり図書館クラスのロジック中に検索クラスの具体的なクラス名がでてこないような例をかんがえてくださいな。 -- [[はやし]] &new{2008-01-14 (月) 19:06:10};
+- 検索条件によって検索クラスを切り替えてインスタンスを返すファクトリー的なクラスを使ってみました。。。こんなんでどうでしょう？ -- [[くらまつ]] &new{2008-01-20 (日) 21:55:50};
+- 時間がかかってすいません。なかなか自分が納得する形が実現できなくて、、、それでもごり押しな感じがまだ気に入っていないのですけども（汗 -- [[くらまつ]] &new{2008-01-20 (日) 21:58:48};
+- 時間がかかってすいません。なかなか自分が納得する形が実現できなくて、、、それでもごり押しな感じがまだ気に入っていないのですけども（汗 -- [[くらまつ]] &new{2008-01-21 (月) 00:11:42};
+
+#comment
+>>>>>>>>>> 1200892386
+[[FrontPage]]>[[OnTheWay]]
+*Stragyパターン [#z5e0da0f]
+データ構造に対して適用する一連のアルゴリズムをカプセル化し、アルゴリズムの切り替えを容易にする。 
+
+**ソース [#g1d6e4eb]
+
+***本リスト(データ構造) [#gb706e09]
+
+  class BookList
+   # 初期化
+   def initialize
+    #本リスト
+    @list = Array.new;
+    #本情報構造体(出版社:タイトル:著者:出版日:貸し出し有無)
+    @book = Struct.new  ("Book", :publisher, :title, :author, :publicationDay, :lendingPresence);
+  end
+	
+   # 本追加
+   def addBook (publisher, title, author, publicationDay, lendingPresence)
+    @list << @book.new(publisher, title, author, publicationDay, lendingPresence);
+   end
+ 
+   # 本リストを返す
+   def getBookList
+    return @list;
+   end
+  end
+
+***検索クラス(インタフェース的なもの？) [#aa3e3bac]
+
+  class Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( bookList, inspectKey )
+    # 何も定義しない
+   end
+  end
+
+***出版社名から検索するクラス(適用アルゴリズム・カプセル化) [#f5828bd1]
+
+  class PublisherRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版社名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publisher == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***タイトル名から検索するクラス [#zdf13203]
+
+  class TitleRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # タイトル名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].title == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***著者名から検索するクラス [#lbcf472b]
+
+  class AuthorRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 著者名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+    if @bookList[count].author == inspectKey
+     retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***出版日から検索するクラス [#c06f78a1]
+
+  class PublicationDay < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版日をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publicaionDay == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+***検索クラスファクトリークラス [#ne8e4596]
+
+ class RetrievalFactory
+  def getInstance(inspect, bookList)
+   case  
+    when inspect == "1"; 
+     return PublisherRetrieval.new( bookList );
+    when inspect == '2'; 
+     return TitleRetrieval.new( bookList );
+    when inspect == '3'; 
+     return AuthorRetrieval.new( bookList );
+    when inspect == '4'; 
+     return PublicationDay.new( bookList );
+    else
+     raise NotImplementedError, "インスタンス化できません"
+    end
+  end
+ end
+
+***図書館クラス [#y57cd23a]
+
+ class Library
+  # 初期化
+  def initialize
+  # 本リスト作成
+   @bookList = BookList.new;
+   @bookList.addBook("A社","しあわせ呼吸トレーニング XXX", "金森 秀晃","2007/01","貸し出し中");
+   @bookList.addBook("A社","所ジョージのキャラクターナビゲーション", "所ジョージ","2007/01","貸し出し中");
+   @bookList.addBook("A社","あなたを危機から救う一分間謝罪法", "ケン ブランチャード","2007/01/01","貸し出し未");
+   @bookList.addBook("B社","蘇る封印歌謡", "石橋 春海","2007/01","貸し出し中");
+   @bookList.addBook("B社"," 「できる人」の時間の使い方~なぜか、「時間と心に余裕のある人」の技術と習慣", "箱田 忠昭","2007/02","貸し出し中");
+   @bookList.addBook("C社","上質美人になる「気品」の教科書―モナコ発セレブの条件","畑中 由利江","2007/02","貸し出し未");
+  end
+
+  # 閲覧
+  def inspection
+ 
+   puts '■■■■■■本貸し出し状況表示■■■■■■'
+   puts '検索方法を以下から選択して下さい。番号を入力して下さいね。'
+   puts '1:出版社名から検索'
+   puts '2:本名(タイトル)から検索'
+   puts '3:著者名から検索'
+   puts '4:出版日から検索'
+ 
+   inspectName = nil;
+   while inspect = gets.chomp
+    case  
+     when inspect == '1'; 
+     inspectName = "出版社名"
+     puts '出版社名を入力して下さい。' ;
+     break;
+     when inspect == '2'; 
+     inspectName = "本名(タイトル)"
+     puts '本名(タイトル)を入力して下さい。' ;
+     break;
+     when inspect == '3'; 
+     inspectName = "著者名"
+     puts '著者名を入力して下さい。' ;
+     break;
+     when inspect == '4'; 
+     inspectName = "出版日"
+     puts '出版日を入力して下さい。' ;
+     break;
+     else
+      puts '入力値が不正です。もう一度、入力して下さい。'
+     end
+   end
+   inspectKey = gets.chomp;
+   # 検索クラス生成
+   factory = RetrievalFactory.new;
+   retrieval = factory.getInstance(inpect, @bookList.getBookList);
+   retrievalBookList = retrieval.retrievalBook inspectKey;
+   
+   if (retrievalBookList == nil || retrievalBookList.size == 0)
+    puts '検索条件に該当する本はありません。'
+   else
+    puts '検索条件[' + inspectName + ']:[' + inspectKey + ']に該当する本の貸し出し状況を表示します。';
+    count = 0;
+    #@book = Struct.new("Book", :publisher, :title, :author, :publicationDay, :LendingPresence);
+    while count < retrievalBookList.size
+     puts '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
+     puts '本No.   [' + (count+1).to_s + ']';
+     puts '出版社  [' + retrievalBookList[count].publisher + ']';
+     puts 'タイトル[' + retrievalBookList[count].title + ']';
+     puts '著者名  [' + retrievalBookList[count].author + ']';
+     puts '出版日  [' + retrievalBookList[count].publicationDay + ']';
+     puts '貸し出し状況[' + retrievalBookList[count].lendingPresence + ']';
+     count = count + 1;
+    end
+   end
+  end
+ end
+
+
+***テスト実行例 [#h4c75eb0]
+■■■■■■本貸し出し状況表示■■■■■■
+検索方法を以下から選択して下さい。番号を入力して下さいね。
+
+1:出版社名から検索
+
+2:本名(タイトル)から検索
+
+3:著者名から検索
+
+4:出版日から検索
+
+1
+
+出版社名を入力して下さい。
+
+A社
+
+検索条件[出版社名]:[A社]に該当する本の貸し出し状況を表示します。
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [1]
+
+出版社  [A社]
+
+タイトル[しあわせ呼吸トレーニング XXX]
+
+著者名  [金森 秀晃]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [2]
+
+出版社  [A社]
+
+タイトル[所ジョージのキャラクターナビゲーション]
+
+著者名  [所ジョージ]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [3]
+
+出版社  [A社]
+
+タイトル[あなたを危機から救う一分間謝罪法]
+
+著者名  [ケン ブランチャード]
+
+出版日  [2007/01/01]  
+
+貸し出し状況[貸し出し未]
+
+**解説 [#dc3a65f2]
+
+と言うことでとりあえず、データ構造を用意してそれに対する実処理を行うクラスの切り替える例を作ってみました。
+
+イメージは図書館の検索処理で、検索条件に合わせて呼び出す検索アルゴリズムを変えてみようとチャレンジしました。
+
+
+
+**応用例 [#o634ad13]
+＜ここに応用例を書く＞
+
+
+*コメント [#ba7d4ce9]
+- おしいなぁ。もうちょい。　検索ロジックを直接使うクラスが実際の型を意識しないで動作するというのがストラテジーのポイントなんで、その点がわかるようなサンプルになっていないと厳しいと思う。つまり図書館クラスのロジック中に検索クラスの具体的なクラス名がでてこないような例をかんがえてくださいな。 -- [[はやし]] &new{2008-01-14 (月) 19:06:10};
+- 検索条件によって検索クラスを切り替えてインスタンスを返すファクトリー的なクラスを使ってみました。。。こんなんでどうでしょう？ごり押しっぽいですが・・ -- [[くらまつ]] &new{2008-01-20 (日) 21:55:50};
+
+#comment
+>>>>>>>>>> 1207497414
+[[FrontPage]]>[[OnTheWay]]
+*Stragyパターン [#z5e0da0f]
+データ構造に対して適用する一連のアルゴリズムをカプセル化し、アルゴリズムの切り替えを容易にする。 
+
+**ソース [#g1d6e4eb]
+
+***本リスト(データ構造) [#gb706e09]
+
+  class BookList
+   # 初期化
+   def initialize
+    #本リスト
+    @list = Array.new;
+    #本情報構造体(出版社:タイトル:著者:出版日:貸し出し有無)
+    @book = Struct.new  ("Book", :publisher, :title, :author, :publicationDay, :lendingPresence);
+  end
+	
+   # 本追加
+   def addBook (publisher, title, author, publicationDay, lendingPresence)
+    @list << @book.new(publisher, title, author, publicationDay, lendingPresence);
+   end
+ 
+   # 本リストを返す
+   def getBookList
+    return @list;
+   end
+  end
+
+***検索クラス(インタフェース的なもの？) [#aa3e3bac]
+
+  class Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( bookList, inspectKey )
+    # 何も定義しない
+   end
+  end
+
+***出版社名から検索するクラス(適用アルゴリズム・カプセル化) [#f5828bd1]
+
+  class PublisherRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版社名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publisher == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***タイトル名から検索するクラス [#zdf13203]
+
+  class TitleRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # タイトル名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].title == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***著者名から検索するクラス [#lbcf472b]
+
+  class AuthorRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 著者名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+    if @bookList[count].author == inspectKey
+     retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***出版日から検索するクラス [#c06f78a1]
+
+  class PublicationDay < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版日をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publicaionDay == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+***検索クラスファクトリークラス [#ne8e4596]
+
+ class RetrievalFactory
+  def getInstance(inspect, bookList)
+   case  
+    when inspect == "1"; 
+     return PublisherRetrieval.new( bookList );
+    when inspect == '2'; 
+     return TitleRetrieval.new( bookList );
+    when inspect == '3'; 
+     return AuthorRetrieval.new( bookList );
+    when inspect == '4'; 
+     return PublicationDay.new( bookList );
+    else
+     raise NotImplementedError, "インスタンス化できません"
+    end
+  end
+ end
+
+***図書館クラス [#y57cd23a]
+
+ class Library
+  # 初期化
+  def initialize
+  # 本リスト作成
+   @bookList = BookList.new;
+   @bookList.addBook("A社","しあわせ呼吸トレーニング XXX", "金森 秀晃","2007/01","貸し出し中");
+   @bookList.addBook("A社","所ジョージのキャラクターナビゲーション", "所ジョージ","2007/01","貸し出し中");
+   @bookList.addBook("A社","あなたを危機から救う一分間謝罪法", "ケン ブランチャード","2007/01/01","貸し出し未");
+   @bookList.addBook("B社","蘇る封印歌謡", "石橋 春海","2007/01","貸し出し中");
+   @bookList.addBook("B社"," 「できる人」の時間の使い方~なぜか、「時間と心に余裕のある人」の技術と習慣", "箱田 忠昭","2007/02","貸し出し中");
+   @bookList.addBook("C社","上質美人になる「気品」の教科書―モナコ発セレブの条件","畑中 由利江","2007/02","貸し出し未");
+  end
+
+  # 閲覧
+  def inspection
+ 
+   puts '■■■■■■本貸し出し状況表示■■■■■■'
+   puts '検索方法を以下から選択して下さい。番号を入力して下さいね。'
+   puts '1:出版社名から検索'
+   puts '2:本名(タイトル)から検索'
+   puts '3:著者名から検索'
+   puts '4:出版日から検索'
+ 
+   inspectName = nil;
+   while inspect = gets.chomp
+    case  
+     when inspect == '1'; 
+     inspectName = "出版社名"
+     puts '出版社名を入力して下さい。' ;
+     break;
+     when inspect == '2'; 
+     inspectName = "本名(タイトル)"
+     puts '本名(タイトル)を入力して下さい。' ;
+     break;
+     when inspect == '3'; 
+     inspectName = "著者名"
+     puts '著者名を入力して下さい。' ;
+     break;
+     when inspect == '4'; 
+     inspectName = "出版日"
+     puts '出版日を入力して下さい。' ;
+     break;
+     else
+      puts '入力値が不正です。もう一度、入力して下さい。'
+     end
+   end
+   inspectKey = gets.chomp;
+   # 検索クラス生成
+   factory = RetrievalFactory.new;
+   retrieval = factory.getInstance(inpect, @bookList.getBookList);
+   retrievalBookList = retrieval.retrievalBook inspectKey;
+   
+   if (retrievalBookList == nil || retrievalBookList.size == 0)
+    puts '検索条件に該当する本はありません。'
+   else
+    puts '検索条件[' + inspectName + ']:[' + inspectKey + ']に該当する本の貸し出し状況を表示します。';
+    count = 0;
+    #@book = Struct.new("Book", :publisher, :title, :author, :publicationDay, :LendingPresence);
+    while count < retrievalBookList.size
+     puts '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
+     puts '本No.   [' + (count+1).to_s + ']';
+     puts '出版社  [' + retrievalBookList[count].publisher + ']';
+     puts 'タイトル[' + retrievalBookList[count].title + ']';
+     puts '著者名  [' + retrievalBookList[count].author + ']';
+     puts '出版日  [' + retrievalBookList[count].publicationDay + ']';
+     puts '貸し出し状況[' + retrievalBookList[count].lendingPresence + ']';
+     count = count + 1;
+    end
+   end
+  end
+ end
+
+
+***テスト実行例 [#h4c75eb0]
+■■■■■■本貸し出し状況表示■■■■■■
+検索方法を以下から選択して下さい。番号を入力して下さいね。
+
+1:出版社名から検索
+
+2:本名(タイトル)から検索
+
+3:著者名から検索
+
+4:出版日から検索
+
+1
+
+出版社名を入力して下さい。
+
+A社
+
+検索条件[出版社名]:[A社]に該当する本の貸し出し状況を表示します。
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [1]
+
+出版社  [A社]
+
+タイトル[しあわせ呼吸トレーニング XXX]
+
+著者名  [金森 秀晃]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [2]
+
+出版社  [A社]
+
+タイトル[所ジョージのキャラクターナビゲーション]
+
+著者名  [所ジョージ]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [3]
+
+出版社  [A社]
+
+タイトル[あなたを危機から救う一分間謝罪法]
+
+著者名  [ケン ブランチャード]
+
+出版日  [2007/01/01]  
+
+貸し出し状況[貸し出し未]
+
+**解説 [#dc3a65f2]
+
+と言うことでとりあえず、データ構造を用意してそれに対する実処理を行うクラスの切り替える例を作ってみました。
+
+イメージは図書館の検索処理で、検索条件に合わせて呼び出す検索アルゴリズムを変えてみようとチャレンジしました。
+
+
+
+**応用例 [#o634ad13]
+＜ここに応用例を書く＞
+
+
+*コメント [#ba7d4ce9]
+- おしいなぁ。もうちょい。　検索ロジックを直接使うクラスが実際の型を意識しないで動作するというのがストラテジーのポイントなんで、その点がわかるようなサンプルになっていないと厳しいと思う。つまり図書館クラスのロジック中に検索クラスの具体的なクラス名がでてこないような例をかんがえてくださいな。 -- [[はやし]] &new{2008-01-14 (月) 19:06:10};
+- 検索条件によって検索クラスを切り替えてインスタンスを返すファクトリー的なクラスを使ってみました。。。こんなんでどうでしょう？ごり押しっぽいですが・・ -- [[くらまつ]] &new{2008-01-20 (日) 21:55:50};
+- 確認しますのでしょうしょうおまちを。。。 -- [[はやし]] &new{2008-01-25 (金) 01:54:19};
+
+#comment
+>>>>>>>>>> 1327665229
+[[FrontPage]]>[[OnTheWay]]
+*Stragyパターン [#z5e0da0f]
+データ構造に対して適用する一連のアルゴリズムをカプセル化し、アルゴリズムの切り替えを容易にする。 
+
+**ソース [#g1d6e4eb]
+
+***本リスト(データ構造) [#gb706e09]
+
+  class BookList
+   # 初期化
+   def initialize
+    #本リスト
+    @list = Array.new;
+    #本情報構造体(出版社:タイトル:著者:出版日:貸し出し有無)
+    @book = Struct.new  ("Book", :publisher, :title, :author, :publicationDay, :lendingPresence);
+  end
+	
+   # 本追加
+   def addBook (publisher, title, author, publicationDay, lendingPresence)
+    @list << @book.new(publisher, title, author, publicationDay, lendingPresence);
+   end
+ 
+   # 本リストを返す
+   def getBookList
+    return @list;
+   end
+  end
+
+***検索クラス(インタフェース的なもの？) [#aa3e3bac]
+
+  class Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( bookList, inspectKey )
+    # 何も定義しない
+   end
+  end
+
+***出版社名から検索するクラス(適用アルゴリズム・カプセル化) [#f5828bd1]
+
+  class PublisherRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版社名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publisher == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***タイトル名から検索するクラス [#zdf13203]
+
+  class TitleRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # タイトル名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].title == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***著者名から検索するクラス [#lbcf472b]
+
+  class AuthorRetrieval < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 著者名をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+    if @bookList[count].author == inspectKey
+     retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+
+***出版日から検索するクラス [#c06f78a1]
+
+  class PublicationDay < Retrieval
+   # 初期化
+   def initialize bookList
+    @bookList = bookList;
+   end
+   # 出版日をキーに本リスト(引数)から検索し、本情報構造体を返す
+   def retrievalBook( inspectKey )
+    retrievalBookList = Array.new;
+    count = 0;
+    while count < @bookList.size - 1
+     if @bookList[count].publicaionDay == inspectKey
+      retrievalBookList << @bookList[count];
+     end
+     count = count + 1;
+    end
+    return retrievalBookList;
+   end
+  end
+***検索クラスファクトリークラス [#ne8e4596]
+
+ class RetrievalFactory
+  def getInstance(inspect, bookList)
+   case  
+    when inspect == "1"; 
+     return PublisherRetrieval.new( bookList );
+    when inspect == '2'; 
+     return TitleRetrieval.new( bookList );
+    when inspect == '3'; 
+     return AuthorRetrieval.new( bookList );
+    when inspect == '4'; 
+     return PublicationDay.new( bookList );
+    else
+     raise NotImplementedError, "インスタンス化できません"
+    end
+  end
+ end
+
+***図書館クラス [#y57cd23a]
+
+ class Library
+  # 初期化
+  def initialize
+  # 本リスト作成
+   @bookList = BookList.new;
+   @bookList.addBook("A社","しあわせ呼吸トレーニング XXX", "金森 秀晃","2007/01","貸し出し中");
+   @bookList.addBook("A社","所ジョージのキャラクターナビゲーション", "所ジョージ","2007/01","貸し出し中");
+   @bookList.addBook("A社","あなたを危機から救う一分間謝罪法", "ケン ブランチャード","2007/01/01","貸し出し未");
+   @bookList.addBook("B社","蘇る封印歌謡", "石橋 春海","2007/01","貸し出し中");
+   @bookList.addBook("B社"," 「できる人」の時間の使い方~なぜか、「時間と心に余裕のある人」の技術と習慣", "箱田 忠昭","2007/02","貸し出し中");
+   @bookList.addBook("C社","上質美人になる「気品」の教科書―モナコ発セレブの条件","畑中 由利江","2007/02","貸し出し未");
+  end
+
+  # 閲覧
+  def inspection
+ 
+   puts '■■■■■■本貸し出し状況表示■■■■■■'
+   puts '検索方法を以下から選択して下さい。番号を入力して下さいね。'
+   puts '1:出版社名から検索'
+   puts '2:本名(タイトル)から検索'
+   puts '3:著者名から検索'
+   puts '4:出版日から検索'
+ 
+   inspectName = nil;
+   while inspect = gets.chomp
+    case  
+     when inspect == '1'; 
+     inspectName = "出版社名"
+     puts '出版社名を入力して下さい。' ;
+     break;
+     when inspect == '2'; 
+     inspectName = "本名(タイトル)"
+     puts '本名(タイトル)を入力して下さい。' ;
+     break;
+     when inspect == '3'; 
+     inspectName = "著者名"
+     puts '著者名を入力して下さい。' ;
+     break;
+     when inspect == '4'; 
+     inspectName = "出版日"
+     puts '出版日を入力して下さい。' ;
+     break;
+     else
+      puts '入力値が不正です。もう一度、入力して下さい。'
+     end
+   end
+   inspectKey = gets.chomp;
+   # 検索クラス生成
+   factory = RetrievalFactory.new;
+   retrieval = factory.getInstance(inpect, @bookList.getBookList);
+   retrievalBookList = retrieval.retrievalBook inspectKey;
+   
+   if (retrievalBookList == nil || retrievalBookList.size == 0)
+    puts '検索条件に該当する本はありません。'
+   else
+    puts '検索条件[' + inspectName + ']:[' + inspectKey + ']に該当する本の貸し出し状況を表示します。';
+    count = 0;
+    #@book = Struct.new("Book", :publisher, :title, :author, :publicationDay, :LendingPresence);
+    while count < retrievalBookList.size
+     puts '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
+     puts '本No.   [' + (count+1).to_s + ']';
+     puts '出版社  [' + retrievalBookList[count].publisher + ']';
+     puts 'タイトル[' + retrievalBookList[count].title + ']';
+     puts '著者名  [' + retrievalBookList[count].author + ']';
+     puts '出版日  [' + retrievalBookList[count].publicationDay + ']';
+     puts '貸し出し状況[' + retrievalBookList[count].lendingPresence + ']';
+     count = count + 1;
+    end
+   end
+  end
+ end
+
+
+***テスト実行例 [#h4c75eb0]
+■■■■■■本貸し出し状況表示■■■■■■
+検索方法を以下から選択して下さい。番号を入力して下さいね。
+
+1:出版社名から検索
+
+2:本名(タイトル)から検索
+
+3:著者名から検索
+
+4:出版日から検索
+
+1
+
+出版社名を入力して下さい。
+
+A社
+
+検索条件[出版社名]:[A社]に該当する本の貸し出し状況を表示します。
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [1]
+
+出版社  [A社]
+
+タイトル[しあわせ呼吸トレーニング XXX]
+
+著者名  [金森 秀晃]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [2]
+
+出版社  [A社]
+
+タイトル[所ジョージのキャラクターナビゲーション]
+
+著者名  [所ジョージ]
+
+出版日  [2007/01]
+
+貸し出し状況[貸し出し中]
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+本No.   [3]
+
+出版社  [A社]
+
+タイトル[あなたを危機から救う一分間謝罪法]
+
+著者名  [ケン ブランチャード]
+
+出版日  [2007/01/01]  
+
+貸し出し状況[貸し出し未]
+
+**解説 [#dc3a65f2]
+
+と言うことでとりあえず、データ構造を用意してそれに対する実処理を行うクラスの切り替える例を作ってみました。
+
+イメージは図書館の検索処理で、検索条件に合わせて呼び出す検索アルゴリズムを変えてみようとチャレンジしました。
+
+
+
+**応用例 [#o634ad13]
+＜ここに応用例を書く＞
+
+
+*コメント [#ba7d4ce9]
+- おしいなぁ。もうちょい。　検索ロジックを直接使うクラスが実際の型を意識しないで動作するというのがストラテジーのポイントなんで、その点がわかるようなサンプルになっていないと厳しいと思う。つまり図書館クラスのロジック中に検索クラスの具体的なクラス名がでてこないような例をかんがえてくださいな。 -- [[はやし]] &new{2008-01-14 (月) 19:06:10};
+- 検索条件によって検索クラスを切り替えてインスタンスを返すファクトリー的なクラスを使ってみました。。。こんなんでどうでしょう？ごり押しっぽいですが・・ -- [[くらまつ]] &new{2008-01-20 (日) 21:55:50};
+- 確認しますのでしょうしょうおまちを。。。 -- [[はやし]] &new{2008-01-25 (金) 01:54:19};
+- eyVEuEuYUMMTkulh -- [[syieynx]] &new{2012-01-28 (土) 05:53:50};
+
+#comment
+

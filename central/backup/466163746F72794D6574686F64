@@ -1,0 +1,355 @@
+>>>>>>>>>> 1199118022
+FactoryMethod
+>>>>>>>>>> 1199118239
+[[FrontPage]]>[[OnTheWay]]
+*FactoryMethodパターン [#m1ec909a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#ce4777be]
+＜ここにソースを書く＞
+>>
+test
+<<
+
+**解説 [#ca160bdc]
+＜ここに解説を書く＞
+
+**応用例 [#l9e68b19]
+＜ここに応用例を書く＞
+
+
+*ご意見を自由にお書きください。 [#p25fdabe]
+
+#article
+**たいとる [#s7a59569]
+>[[test]] (2007-12-27 (木) 16:36:02)~
+~
+ないよう~
+
+//
+
+#comment
+>>>>>>>>>> 1199324340
+[[FrontPage]]>[[OnTheWay]]
+*FactoryMethodパターン [#m1ec909a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#ce4777be]
+>>
+
+~#工場クラス。ものを作ります。
+
+class Factory
+
+def createProduct(user)
+  Product.new(user)
+  end
+end
+
+~#製品クラス。使われます。
+
+class Product
+  def use
+  end
+end
+
+~#工場の実体クラス。
+
+class UniqueFactory < Factory
+  def createProduct(user)
+    UniqueProduct.new(user)
+  end
+end
+
+~#製品の実体クラス
+
+class UniqueProduct < Product
+  def initialize(user)
+    @user = user
+  end
+  def use
+    puts "user is "+@user
+  end
+end
+
+~#メイン
+
+factory = UniqueFactory.new
+productA = factory.createProduct("teshima")
+productB = factory.createProduct("koda")
+
+productA.use
+productB.use
+<<
+
+**解説 [#ca160bdc]
+見た目の整形をどうしたら良いのかわからないので非常に見づらくなっております。
+申し訳ありません。
+べたっと書くのはどうやったら良いんだ・・・
+
+FactoryMethodパターンの説明は・・・えー、しばらくお待ちください。まだ人様に説明できるほど理解していません。すみません。
+
+ソースについてですが、Rubyには抽象クラスが無い(実装を強制するような仕掛けは無い)みたいなので、どうやって実現するか大分迷いました。
+親の工場クラスと違う製品を作りたければオーバーライドしてください。みたいなものになっています。こんなので良いんですかね？
+
+**応用例 [#l9e68b19]
+＜ここに応用例を書く＞
+
+
+*ご意見を自由にお書きください。 [#p25fdabe]
+
+#article
+**たいとる [#s7a59569]
+>[[test]] (2007-12-27 (木) 16:36:02)~
+~
+ないよう~
+
+//
+
+#comment
+>>>>>>>>>> 1199336463
+[[FrontPage]]>[[OnTheWay]]
+*FactoryMethodパターン [#m1ec909a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#ce4777be]
+>>
+
+~#工場クラス。ものを作ります。
+
+ class Factory
+  def createProduct(user)
+   Product.new(user)
+  end
+ end
+
+~#製品クラス。使われます。
+
+class Product
+  def use
+  end
+end
+
+~#工場の実体クラス。
+
+class UniqueFactory < Factory
+  def createProduct(user)
+    UniqueProduct.new(user)
+  end
+end
+
+~#製品の実体クラス
+
+class UniqueProduct < Product
+  def initialize(user)
+    @user = user
+  end
+  def use
+    puts "user is "+@user
+  end
+end
+
+~#メイン
+
+factory = UniqueFactory.new
+productA = factory.createProduct("teshima")
+productB = factory.createProduct("koda")
+
+productA.use
+productB.use
+<<
+
+**解説 [#ca160bdc]
+見た目の整形をどうしたら良いのかわからないので非常に見づらくなっております。
+申し訳ありません。
+べたっと書くのはどうやったら良いんだ・・・
+
+FactoryMethodパターンの説明は・・・えー、しばらくお待ちください。まだ人様に説明できるほど理解していません。すみません。
+
+ソースについてですが、Rubyには抽象クラスが無い(実装を強制するような仕掛けは無い)みたいなので、どうやって実現するか大分迷いました。
+親の工場クラスと違う製品を作りたければオーバーライドしてください。みたいなものになっています。こんなので良いんですかね？
+
+**応用例 [#l9e68b19]
+＜ここに応用例を書く＞
+
+
+*ご意見を自由にお書きください。 [#p25fdabe]
+
+#article
+**最初のクラスだけ整形しときました。 [#ma87bf32]
+>[[はやし]] (2008-01-03 (木) 23:01:02)~
+~
+先頭に半角スペースを入れる方法です。~
+これでブロック要素になります。~
+~
+編集リンクを押すと、下の方にヘルプへのリンクが出るんでみてみてくださいな。~
+
+//
+
+#comment
+
+**べたっと書く方法 [#sc6e251c]
+>[[はやし]] (2008-01-03 (木) 22:56:28)~
+~
+一つは行頭に全部半角スペースをいれるとか。~
+テキストエディタで全行の先頭にタブを一つ追加するのが一番簡単かも。~
+
+//
+
+#comment
+
+**たいとる [#s7a59569]
+>[[test]] (2007-12-27 (木) 16:36:02)~
+~
+ないよう~
+
+//
+
+#comment
+>>>>>>>>>> 1199380785
+[[FrontPage]]>[[OnTheWay]]
+*FactoryMethodパターン [#m1ec909a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#ce4777be]
+>>
+
+~#工場クラス。ものを作ります。
+
+ class Factory
+  def createProduct(user)
+   Product.new(user)
+  end
+ end
+
+~#製品クラス。使われます。
+
+class Product
+  def use
+  end
+end
+
+~#工場の実体クラス。
+
+class UniqueFactory < Factory
+  def createProduct(user)
+    UniqueProduct.new(user)
+  end
+end
+
+~#製品の実体クラス
+
+class UniqueProduct < Product
+  def initialize(user)
+    @user = user
+  end
+  def use
+    puts "user is "+@user
+  end
+end
+
+~#メイン
+
+factory = UniqueFactory.new
+productA = factory.createProduct("teshima")
+productB = factory.createProduct("koda")
+
+productA.use
+productB.use
+<<
+
+**解説 [#ca160bdc]
+見た目の整形をどうしたら良いのかわからないので非常に見づらくなっております。
+申し訳ありません。
+べたっと書くのはどうやったら良いんだ・・・
+
+FactoryMethodパターンの説明は・・・えー、しばらくお待ちください。まだ人様に説明できるほど理解していません。すみません。
+
+ソースについてですが、Rubyには抽象クラスが無い(実装を強制するような仕掛けは無い)みたいなので、どうやって実現するか大分迷いました。
+親の工場クラスと違う製品を作りたければオーバーライドしてください。みたいなものになっています。こんなので良いんですかね？
+
+**応用例 [#l9e68b19]
+＜ここに応用例を書く＞
+
+*コメント [#l9e68b19]
+- それとも、実行時にProductクラスのサブクラスでないと例外を投げるとか。 -- [[はやし]] &new{2008-01-04 (金) 11:19:00};
+- 実装を強制するような仕掛けは無いんで、Productクラスってはいらないようなきがします。とするとFatoryMethodを実現するソースはどうなるかですね。　 -- [[はやし]] &new{2008-01-04 (金) 11:01:03};
+-最初のクラスだけ整形しときました
+先頭に半角スペースを入れる方法です。
+これでブロック要素になります。　
+編集リンクを押すと、下の方にヘルプへのリンクが出るんでみてみてくださいな。--[[はやし]] (2008-01-03 (木) 23:01:02);
+-べたっと書く方法
+一つは行頭に全部半角スペースをいれるとか。
+テキストエディタで全行の先頭にタブを一つ追加するのが一番簡単かも。[[はやし]] (2008-01-03 (木) 22:56:28);
+#comment
+>>>>>>>>>> 1199644263
+[[FrontPage]]>[[OnTheWay]]
+*FactoryMethodパターン [#m1ec909a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#ce4777be]
+>>
+
+ #工場クラス。ものを作ります。
+ class Factory
+  def createProduct(user)
+   Product.new(user)
+  end
+ end
+ 
+ #製品クラス。使われます。
+ class Product
+  def use
+  end
+ end
+ 
+ #工場の実体クラス。
+ class UniqueFactory < Factory
+  def createProduct(user)
+    UniqueProduct.new(user)
+  end
+ end
+ 
+ #製品の実体クラス
+ class UniqueProduct < Product
+  def initialize(user)
+    @user = user
+  end
+  def use
+    puts "user is "+@user
+  end
+ end
+ 
+ #メイン
+ factory = UniqueFactory.new
+ productA = factory.createProduct("teshima")
+ productB = factory.createProduct("koda")
+ 
+ productA.use
+ productB.use
+<<
+
+**解説 [#ca160bdc]
+FactoryMethodパターンの説明は・・・えー、しばらくお待ちください。まだ人様に説明できるほど理解していません。すみません。
+
+ソースについてですが、Rubyには抽象クラスが無い(実装を強制するような仕掛けは無い)みたいなので、どうやって実現するか大分迷いました。
+親の工場クラスと違う製品を作りたければオーバーライドしてください。みたいなものになっています。こんなので良いんですかね？
+
+**応用例 [#l9e68b19]
+＜ここに応用例を書く＞
+
+*コメント [#l9e68b19]
+- それとも、実行時にProductクラスのサブクラスでないと例外を投げるとか。 -- [[はやし]] &new{2008-01-04 (金) 11:19:00};
+- 実装を強制するような仕掛けは無いんで、Productクラスってはいらないようなきがします。とするとFatoryMethodを実現するソースはどうなるかですね。　 -- [[はやし]] &new{2008-01-04 (金) 11:01:03};
+-最初のクラスだけ整形しときました
+先頭に半角スペースを入れる方法です。
+これでブロック要素になります。　
+編集リンクを押すと、下の方にヘルプへのリンクが出るんでみてみてくださいな。--[[はやし]] (2008-01-03 (木) 23:01:02);
+-べたっと書く方法
+一つは行頭に全部半角スペースをいれるとか。
+テキストエディタで全行の先頭にタブを一つ追加するのが一番簡単かも。[[はやし]] (2008-01-03 (木) 22:56:28);
+- とりあえず整形しました。 -- [[てしま]] &new{2008-01-07 (月) 12:23:27};
+- FactoryMethodの利点って、オブジェクトを生成するところをメソッドにしておくことで、オーバーライドの仕組みをつかって一部を修正できるという点だと思うんです。　なんで、テンプレートメソッドパターンと組み合わせた例にしておいた方が、強力なきがします。 -- [[はやし]] &new{2008-01-07 (月) 12:31:03};
+
+#comment
+

@@ -1,0 +1,513 @@
+>>>>>>>>>> 1198973859
+[[FrontPage]]>[[OnTheWay]]
+*Commandパターン [#u5d1f327]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#h00e99e2]
+＜ここにソースを書く＞
+
+**解説 [#eca1a9a7]
+＜ここに解説を書く＞
+
+**応用例 [#jd55be54]
+＜ここに応用例を書く＞
+
+
+*ご意見を自由にお書きください。 [#bf2e8aa0]
+
+#article
+**たいとる [#w1b21248]
+>[[test]] (2007-12-27 (木) 16:36:02)~
+~
+ないよう~
+
+//
+
+#comment
+>>>>>>>>>> 1198973883
+[[FrontPage]]>[[OnTheWay]]
+*Commandパターン [#u5d1f327]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#h00e99e2]
+＜ここにソースを書く＞
+
+**解説 [#eca1a9a7]
+＜ここに解説を書く＞
+
+**応用例 [#jd55be54]
+＜ここに応用例を書く＞
+
+
+*ご意見を自由にお書きください。 [#bf2e8aa0]
+
+#article
+>>>>>>>>>> 1199389840
+[[FrontPage]]>[[OnTheWay]]
+*Commandパターン [#u5d1f327]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#h00e99e2]
+
+***コマンドキュークラス [#df54afbc]
+  class CommandQue
+    def initialize
+      #現在の実行位置を示す
+      @currentPoint = 0
+      
+      #コマンドリスト
+      @commandList = Array.new
+    end
+    def to_s
+      @commandList.to_s
+    end
+  
+   #一つ実行する。 
+   def doOne(com)
+     if( @currentPoint < @commandList.size )
+       #現在の実行位置以降を削除
+       @commandList.slice( @currentPoint+1 .. @commandList.size )
+     end
+  
+     #コマンドを実行
+     com.doThis
+  
+     #実行したコマンドを記録
+     @commandList.push com
+     @currentPoint = @commandList.size
+   end
+   
+   #一つもどす
+   def undoOne
+     if( @currentPoint >0 )
+       @currentPoint -= 1
+       @commandList[@currentPoint].undoThis
+     end
+   end
+   
+   #再実行
+   def redoOne
+     if( @currentPoint < @commandList.size)
+       @commandList[@currentPoint].doThis
+       @currentPoint += 1
+     end   
+   end
+  end
+
+
+***コマンド基底クラス [#q7c67e49]
+  class Command
+    def initialize( base )
+      @base = base
+    end
+    
+    def to_s
+      @base.to_s
+    end
+  
+     #このコマンドの実行処理
+     def doThis
+      raise "doThis method not implemented"
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+      raise "undoThis method not implemented"
+     end
+  end
+  
+***#足し算コマンドクラス [#se70c09f]
+  class PulusCommand < Command
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis
+        @base.envNumber = @base.envNumber + @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @base.envNumber = @base.envNumber - @arg
+     end
+  end
+  
+***#引き算コマンドクラス [#e7bbda75]
+  class MinusCommand < Command
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis
+        @base.envNumber = @base.envNumber - @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @base.envNumber = @base.envNumber + @arg
+     end
+  end
+  
+***#かけ算コマンドクラス [#h71fb9b7]
+  class MultiCommand < Command
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis()
+        @base.envNumber = @base.envNumber * @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @base.envNumber = @base.envNumber / @arg
+     end
+  end
+  
+***変化させる環境を示すクラス [#k7e9ce60]
+  class Env
+   def initialize
+     @envNumber = 100;
+   end
+  
+   #アクセサーの定義
+   attr_accessor :envNumber     
+   
+   def to_s
+     @envNumber.to_s
+   end
+  end
+  
+
+***テスト実行例 [#je930833]
+  
+  #変化させる環境
+  base = Env.new
+  
+  #コマンドの作成
+  
+  # +1するコマンド
+  cp1 = PulusCommand.new( base );
+  cp1.arg = 1; 
+  
+  # ２倍するコマンド
+  cm1 = MultiCommand.new( base );
+  cm1.arg = 2; 
+  
+  # 10倍するコマンド
+  cm2 = MultiCommand.new( base );
+  cm2.arg = 10; 
+  
+  
+  #コマンドキューを生成
+  que = CommandQue.new
+  
+  #初期値を表示
+  puts( base)
+  
+  #最初のコマンドを実行　（+1）
+  que.doOne(cp1);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #２倍コマンドを実行　（*2）
+  que.doOne(cm1);
+  
+  #結果を表示
+  puts( base)
+  
+  #２10倍コマンドを実行　（*10）
+  que.doOne(cm2);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+
+  #リドゥー
+  que.redoOne
+  
+  #リドゥー結果を表示
+  puts( base)
+
+
+***実行結果 [#l3044656]
+
+ 100
+ 101
+ 100
+ 200
+ 2000
+ 200
+ 100
+ 200
+
+**解説 [#eca1a9a7]
+
+処理をコマンドという形で抽象化することで、実行はアンドゥーを統一的にあつかえる。
+コマンドをためておいて、あとで順番に実行するなどの制御を行うことなどができる。
+
+応用例としてひとつの処理に対してアンドゥー処理をセットで一つのコマンド内に作っておくことで、比較的容易にそのときの状態や引数から元の状態を再現することができる。
+
+その処理のアンドゥーのタイミング制御を外部から制御できるのでユーザーインターフェースの実装設計が簡単になる。
+
+#ref(コマンドパターンサンプルクラス図.jpg)
+
+**応用例 [#jd55be54]
+＜ここに応用例を書く＞
+
+
+*コメント [#jd55be54]
+#comment
+>>>>>>>>>> 1199392540
+[[FrontPage]]>[[OnTheWay]]
+*Commandパターン [#u5d1f327]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#h00e99e2]
+
+***コマンドキュークラス [#df54afbc]
+  class CommandQue
+    def initialize
+      #現在の実行位置を示す
+      @currentPoint = 0
+      
+      #コマンドリスト
+      @commandList = Array.new
+    end
+    def to_s
+      @commandList.to_s
+    end
+  
+   #一つ実行する。 
+   def doOne(com)
+     if( @currentPoint < @commandList.size )
+       #現在の実行位置以降を削除
+       @commandList.slice( @currentPoint+1 .. @commandList.size )
+     end
+  
+     #コマンドを実行
+     com.doThis
+  
+     #実行したコマンドを記録
+     @commandList.push com
+     @currentPoint = @commandList.size
+   end
+   
+   #一つもどす
+   def undoOne
+     if( @currentPoint >0 )
+       @currentPoint -= 1
+       @commandList[@currentPoint].undoThis
+     end
+   end
+   
+   #再実行
+   def redoOne
+     if( @currentPoint < @commandList.size)
+       @commandList[@currentPoint].doThis
+       @currentPoint += 1
+     end   
+   end
+  end
+
+
+***コマンド基底クラス [#q7c67e49]
+  class Command
+    def initialize( base )
+      @base = base
+    end
+    
+    def to_s
+      @base.to_s
+    end
+  
+     #このコマンドの実行処理
+     def doThis
+      raise "doThis method not implemented"
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+      raise "undoThis method not implemented"
+     end
+  end
+  
+***#足し算コマンドクラス [#se70c09f]
+  class PulusCommand < Command
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis
+        @base.envNumber = @base.envNumber + @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @base.envNumber = @base.envNumber - @arg
+     end
+  end
+  
+***#引き算コマンドクラス [#e7bbda75]
+  class MinusCommand < Command
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis
+        @base.envNumber = @base.envNumber - @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @base.envNumber = @base.envNumber + @arg
+     end
+  end
+  
+***#かけ算コマンドクラス [#h71fb9b7]
+  class MultiCommand < Command
+     #アクセサーの定義
+     attr_accessor :arg     
+    
+     #このコマンドの実行処理
+     def doThis()
+        @base.envNumber = @base.envNumber * @arg
+     end
+  
+     #このコマンドのアンドゥー処理
+     def undoThis
+        @base.envNumber = @base.envNumber / @arg
+     end
+  end
+  
+***変化させる環境を示すクラス [#k7e9ce60]
+  class Env
+   def initialize
+     @envNumber = 100;
+   end
+  
+   #アクセサーの定義
+   attr_accessor :envNumber     
+   
+   def to_s
+     @envNumber.to_s
+   end
+  end
+  
+
+***テスト実行例 [#je930833]
+  
+  #変化させる環境
+  base = Env.new
+  
+  #コマンドの作成
+  
+  # +1するコマンド
+  cp1 = PulusCommand.new( base );
+  cp1.arg = 1; 
+  
+  # ２倍するコマンド
+  cm1 = MultiCommand.new( base );
+  cm1.arg = 2; 
+  
+  # 10倍するコマンド
+  cm2 = MultiCommand.new( base );
+  cm2.arg = 10; 
+  
+  
+  #コマンドキューを生成
+  que = CommandQue.new
+  
+  #初期値を表示
+  puts( base)
+  
+  #最初のコマンドを実行　（+1）
+  que.doOne(cp1);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #２倍コマンドを実行　（*2）
+  que.doOne(cm1);
+  
+  #結果を表示
+  puts( base)
+  
+  #10倍コマンドを実行　（*10）
+  que.doOne(cm2);
+  
+  #結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+  
+  #アンドゥー
+  que.undoOne
+  
+  #アンドゥー結果を表示
+  puts( base)
+ 
+  #リドゥー
+  que.redoOne
+  
+  #リドゥー結果を表示
+  puts( base)
+
+
+***実行結果 [#l3044656]
+
+ 100
+ 101
+ 100
+ 200
+ 2000
+ 200
+ 100
+ 200
+
+**解説 [#eca1a9a7]
+
+処理をコマンドという形で抽象化することで、実行を統一的にあつかえる。
+コマンドをためておいて、あとで順番に実行するなどの制御を行うことなどができる。
+
+応用例としてひとつの処理に対してアンドゥー処理をセットで一つのコマンド内に作っておくことで、比較的容易にそのときの状態や引数から元の状態を再現することができる。
+
+その処理のアンドゥーのタイミング制御を外部から制御できるのでユーザーインターフェースの実装設計が簡単になる。
+
+#ref(コマンドパターンサンプルクラス図.jpg)
+
+**応用例 [#jd55be54]
+＜ここに応用例を書く＞
+
+
+*コメント [#jd55be54]
+#comment
+

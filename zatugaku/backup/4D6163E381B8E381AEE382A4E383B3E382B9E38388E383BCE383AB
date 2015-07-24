@@ -1,0 +1,42 @@
+>>>>>>>>>> 1332281958
+**HomeBrewによるインストール [#tbf5c70c]
+HomeBrew
+
+This is the fastest, most current, way of installing CouchDB from source on a Mac, along with all dependencies. It tracks releases with only a few days delay.
+
+Note: if you are using XCode 4.3 or newer, or the command-line only build tools, you may need to install additional GNU automake tools before brewing CouchBB. For users that have not upgraded, these tools are already present and could break other brew recipes, so these dependencies are not included in the CouchDB recipe.
+
+$ brew install autoconf automake libtool
+
+Then:
+
+$ brew install couchdb
+
+If you're hacking on CouchDB, and we hope you will, you may try the current git-based development branch using this couchdb recipe, https://gist.github.com/2083174, and then:
+
+$ brew install --devel couchdb
+
+Note: OS X Lion might hang on the final make. See the thread at https://github.com/mxcl/homebrew/issues/7024 It seems in most cases to be resolved by breaking out with CTRL-C and then repeating with brew install -v couchdb.
+
+If you wish to have CouchDB run as a daemon then, set up the account, using the user accounts preference pane
+
+    create a standard user  couchdb  with home directory  /usr/local/var/lib/couchdb 
+
+    create a group called  couchdb  and add yourself, the couchdb user, and any others you want to be able to edit config or db files directly to it. Use the  advanced  group options to ensure the internal name is also correctly called couchdb. 
+
+Using a terminal, set permissions as follows:
+
+RELAX=/usr/local
+sudo chown -R couchdb:couchdb $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb
+sudo chmod -R 770 $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb
+sudo find -X $RELAX/etc/couchdb $RELAX/var/lib/couchdb $RELAX/var/run/couchdb $RELAX/var/log/couchdb -type f | xargs chmod 660
+sudo cp $RELAX/Cellar/couchdb/1.1.1/Library/LaunchDaemons/org.apache.couchdb.plist /Library/LaunchDaemons/
+
+Finally, you can start/stop CouchDB daemon using these terminal aliases:
+
+restart_couch='/usr/bin/sudo launchctl stop org.apache.couchdb'
+start_couch='/usr/bin/sudo launchctl load -w /Library/LaunchDaemons/org.apache.couchdb.plist'
+stop_couch='/usr/bin/sudo launchctl unload /Library/LaunchDaemons/org.apache.couchdb.plist'
+
+[[CouchDB]] へ戻る
+

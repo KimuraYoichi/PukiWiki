@@ -1,0 +1,541 @@
+>>>>>>>>>> 1198707635
+[[OnTheWay]]
+
+
+＜ここにソースと解説を書く。＞
+
+
+
+*ご意見を自由にお書きください。 [#r502df8d]
+
+#article
+>>>>>>>>>> 1198708629
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+
+*ご意見を自由にお書きください。 [#r502df8d]
+
+#article
+**たいとる [#e5000b1b]
+>[[test]] (2007-12-27 (木) 16:36:02)~
+~
+ないよう~
+
+//
+
+#comment
+>>>>>>>>>> 1198995480
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+>>
+test by hirata
+<<
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+
+*ご意見を自由にお書きください。 [#r502df8d]
+
+#article
+**たいとる [#e5000b1b]
+>[[test]] (2007-12-27 (木) 16:36:02)~
+~
+ないよう~
+
+//
+
+#comment
+>>>>>>>>>> 1199379913
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+>>
+test by hirata
+<<
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+*コメント [#r502df8d]
+#comment
+>>>>>>>>>> 1199490136
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+*パン工場 [#heb7e0c7]
+module BreadFactory
+
+ def createBread
+  raise NotImplementedError, "実装してないですよ。"
+ end
+end
+
+*メロンパン [#r3262ffd]
+class MelonBread
+ include BreadFactory
+ 
+ def createBread
+  puts "甘いメロンパン完成"
+ end
+end
+
+*焼きそばパン [#de040e1c]
+class YakisobaBread
+ include BreadFactory
+ 
+ def createBread
+  puts "紅しょうが入り焼きそばパン完成"
+ end
+end
+
+*パン屋さん [#gf26e03e]
+class BreadShop
+
+ #パン品揃え(ハッシュ)
+ @@kind = {
+  'melon' => MelonBread.new,
+  'yakisoba' => YakisobaBread.new
+ }
+
+ def self.create type
+  
+  if !@@kind.include? type
+   raise NotImplementedError, "当店には置いておりません"
+  end
+  
+  @@kind[type]
+ end
+
+end
+
+ 
+*実行 [#y3dff6ca]
+while(true)
+ puts 'パンの種類を入力してください'
+ inputKind = gets.chomp
+ 
+ if(inputKind == '')
+  break
+ end
+ 
+ factory = BreadShop.create inputKind
+ puts factory.createBread
+end
+
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+*コメント [#r502df8d]
+- できやした！ -- [[ひらた]] &new{2008-01-05 (土) 17:42:16};
+
+#comment
+>>>>>>>>>> 1199516070
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+*パン工場 [#heb7e0c7]
+ module BreadFactory
+ 
+ def createBread
+  raise NotImplementedError, "実装してないですよ。"
+ end
+ end
+
+*メロンパン [#r3262ffd]
+ class MelonBread
+  include BreadFactory
+ 
+  def createBread
+   puts "甘いメロンパン完成"
+  end
+ end
+
+*焼きそばパン [#de040e1c]
+class YakisobaBread
+ include BreadFactory
+ 
+ def createBread
+  puts "紅しょうが入り焼きそばパン完成"
+ end
+end
+
+*パン屋さん [#gf26e03e]
+class BreadShop
+
+ #パン品揃え(ハッシュ)
+ @@kind = {
+  'melon' => MelonBread.new,
+  'yakisoba' => YakisobaBread.new
+ }
+
+ def self.create type
+  
+  if !@@kind.include? type
+   raise NotImplementedError, "当店には置いておりません"
+  end
+  
+  @@kind[type]
+ end
+
+end
+
+ 
+*実行 [#y3dff6ca]
+while(true)
+ puts 'パンの種類を入力してください'
+ inputKind = gets.chomp
+ 
+ if(inputKind == '')
+  break
+ end
+ 
+ factory = BreadShop.create inputKind
+ puts factory.createBread
+end
+
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+*コメント [#r502df8d]
+- できやした！ -- [[ひらた]] &new{2008-01-05 (土) 17:42:16};
+- パン屋さんなんだね。(笑）　 -- [[はやし]] &new{2008-01-06 (日) 00:52:20};
+
+#comment
+>>>>>>>>>> 1199552117
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+*パン工場 [#heb7e0c7]
+ module BreadFactory
+ 
+ def createBread
+  raise NotImplementedError, "実装してないですよ。"
+ end
+ end
+
+*メロンパン [#r3262ffd]
+ class MelonBread
+  include BreadFactory
+ 
+  def createBread
+   puts "甘いメロンパン完成"
+  end
+ end
+
+*焼きそばパン [#de040e1c]
+class YakisobaBread
+ include BreadFactory
+ 
+ def createBread
+  puts "紅しょうが入り焼きそばパン完成"
+ end
+end
+
+*パン屋さん [#gf26e03e]
+class BreadShop
+
+ #パン品揃え(ハッシュ)
+ @@kind = {
+  'melon' => MelonBread.new,
+  'yakisoba' => YakisobaBread.new
+ }
+
+ def self.create type
+  
+  if !@@kind.include? type
+   raise NotImplementedError, "当店には置いておりません"
+  end
+  
+  @@kind[type]
+ end
+
+end
+
+ 
+*実行 [#y3dff6ca]
+while(true)
+ puts 'パンの種類を入力してください'
+ inputKind = gets.chomp
+ 
+ if(inputKind == '')
+  break
+ end
+ 
+ factory = BreadShop.create inputKind
+ puts factory.createBread
+end
+
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+*コメント [#r502df8d]
+- できやした！ -- [[ひらた]] &new{2008-01-05 (土) 17:42:16};
+- パン屋さんなんだね。(笑）　 -- [[はやし]] &new{2008-01-06 (日) 00:52:20};
+- AbstructFactoryの利点を説明するには、オブジェクトの生成が局所化されているからいいんだという点がわかるサンプルにしたほうがいいようなきがします。　つまりパンやさんを使う人が複数いて、ファクトリの修正だけですべての人から見た焼きそばパンの仕様が１カ所の修正でできるという説明です。 -- [[はやし]] &new{2008-01-06 (日) 10:54:30};
+
+#comment
+>>>>>>>>>> 1199633913
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+*パン工場 [#heb7e0c7]
+ module BreadFactory
+ 
+ def createBread
+  raise NotImplementedError, "実装してないですよ。"
+ end
+ end
+
+*メロンパン [#r3262ffd]
+ class MelonBread
+  include BreadFactory
+ 
+  def createBread
+   puts "甘いメロンパン完成"
+  end
+ end
+
+*焼きそばパン [#de040e1c]
+class YakisobaBread
+ include BreadFactory
+ 
+ def createBread
+  puts "紅しょうが入り焼きそばパン完成"
+ end
+end
+
+*パン屋さん [#gf26e03e]
+class BreadShop
+
+ #パン品揃え(ハッシュ)
+ @@kind = {
+  'melon' => MelonBread.new,
+  'yakisoba' => YakisobaBread.new
+ }
+
+ def self.create type
+  
+  if !@@kind.include? type
+   raise NotImplementedError, "当店には置いておりません"
+  end
+  
+  @@kind[type]
+ end
+
+end
+
+ 
+*実行 [#y3dff6ca]
+while(true)
+ puts 'パンの種類を入力してください'
+ inputKind = gets.chomp
+ 
+ if(inputKind == '')
+  break
+ end
+ 
+ factory = BreadShop.create inputKind
+ puts factory.createBread
+end
+
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+*コメント [#r502df8d]
+- できやした！ -- [[ひらた]] &new{2008-01-05 (土) 17:42:16};
+- パン屋さんなんだね。(笑）　 -- [[はやし]] &new{2008-01-06 (日) 00:52:20};
+- AbstructFactoryの利点を説明するには、オブジェクトの生成が局所化されているからいいんだという点がわかるサンプルにしたほうがいいようなきがします。　つまりパンやさんを使う人が複数いて、ファクトリの修正だけですべての人から見た焼きそばパンの仕様が１カ所の修正でできるという説明です。 -- [[はやし]] &new{2008-01-06 (日) 10:54:30};
+- 了解です。ちょっと考えてみますね。 -- [[ひらた]] &new{2008-01-07 (月) 09:38:33};
+
+#comment
+>>>>>>>>>> 1199681794
+[[FrontPage]]>[[OnTheWay]]
+*AbstractFactoryパターン [#qdfa8b2a]
+関連する一連のインスタンスを状況に応じて適切に生成する方法を提供する。
+
+**ソース [#r502df8d]
+＜ここにソースを書く＞
+*パン工場 [#heb7e0c7]
+ module BreadFactory
+
+  #味付け
+  def taste
+   raise NotImplementedError, "味付けを実装してないですよ。"
+  end
+ 
+  #生地
+  def dough
+   raise NotImplementedError, "生地を実装してないですよ。"
+  end
+ 
+  #名前
+  def breadName
+   raise NotImplementedError, "名前を実装してないですよ。"
+  end
+ end
+
+*メロンパン [#r3262ffd]
+ class MelonBread
+  include BreadFactory
+ 
+  #味付け
+  def taste
+   puts '砂糖'
+  end
+ 
+  #生地
+  def dough
+   puts 'クッキー'
+  end
+ 
+  #名前
+  def breadName
+   puts 'メロンパン'
+  end
+ end
+
+
+*焼きそばパン [#de040e1c]
+ class YakisobaBread
+  include BreadFactory
+ 
+  #味付け
+  def taste
+   puts 'ソース'
+  end
+ 
+  #生地
+  def dough
+   puts 'コッペパン'
+  end
+ 
+  #名前
+  def breadName
+   puts '焼きそばパン'
+  end
+ 
+  #付属
+  def option
+   puts '紅しょうが'
+  end
+ end
+
+*パン屋さん [#gf26e03e]
+  #パン品揃え(ハッシュ)
+  @kind = {}
+
+  def self.create type
+   
+   if !@kind.include? type
+    raise NotImplementedError, "当店には置いておりません"
+   end
+ 
+   @kind[type]
+  end
+
+ end
+
+*アンデルセン [#rc037de2]
+ class Andersen < BreadShop
+  #パン品揃え(ハッシュ)
+  @kind = {
+   'melon' => MelonBread.new,
+   'yakisoba' => YakisobaBread.new
+  }
+
+ end
+
+ 
+
+*セブンイレブン [#p17d0f71]
+ class SevenEleven < BreadShop
+  #パン品揃え(ハッシュ)
+  @kind = {
+   'soba' => YakisobaBread.new
+   }
+   
+ end
+ 
+*実行 [#y3dff6ca]
+ while(true)
+  puts 'パンの種類を入力してください'
+  inputKind = gets.chomp
+ 
+  if(inputKind == '')
+   break
+  end
+ 
+  factory = SevenEleven.create inputKind
+  puts factory.breadName
+ end
+
+
+
+**解説 [#r502df8d]
+＜ここに解説を書く＞
+
+**応用例 [#r502df8d]
+＜ここに応用例を書く＞
+
+*コメント [#r502df8d]
+- できやした！ -- [[ひらた]] &new{2008-01-05 (土) 17:42:16};
+- パン屋さんなんだね。(笑）　 -- [[はやし]] &new{2008-01-06 (日) 00:52:20};
+- AbstractFactoryの利点を説明するには、オブジェクトの生成が局所化されているからいいんだという点がわかるサンプルにしたほうがいいようなきがします。　つまりパンやさんを使う人が複数いて、ファクトリの修正だけですべての人から見た焼きそばパンの仕様が１カ所の修正でできるという説明です。 -- [[はやし]] &new{2008-01-06 (日) 10:54:30};
+- 了解です。ちょっと考えてみますね。 -- [[ひらた]] &new{2008-01-07 (月) 09:38:33};
+- アンデルセンとセブンイレブンを追加しました。 -- [[ひらた]] &new{2008-01-07 (月) 22:56:33};
+
+#comment
+
